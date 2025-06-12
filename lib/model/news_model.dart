@@ -1,65 +1,73 @@
-
 class News {
   final String newsId;
   final String title;
-  final String content;
+  final String? subHeading;
+  final String description;
   final List<String> imageUrls;
-  final DateTime timestamp;
-  final Location location;
-  final String categoryId;
-  final String createdBy;
-  final String verifiedBy;
-  final String status;
-  final int likes;
-  final int views;
+  final DateTime? timestamp;
+  final Location? location;
+  final String? categoryId;
+  final String? createdBy;
+  final String? verifiedBy;
+  final String? status;
+  final int? likes;
+  final int? views;
+  final int? shares;
 
   News({
     required this.newsId,
     required this.title,
-    required this.content,
+    this.subHeading,
+    required this.description,
     required this.imageUrls,
-    required this.timestamp,
-    required this.location,
-    required this.categoryId,
-    required this.createdBy,
-    required this.verifiedBy,
-    required this.status,
+    this.timestamp,
+    this.location,
+    this.categoryId,
+    this.createdBy,
+    this.verifiedBy,
+    this.status,
     this.likes = 0,
     this.views = 0,
+    this.shares = 0,
   });
 
   factory News.fromJson(Map<String, dynamic> json) => News(
     newsId: json['newsId'],
     title: json['title'],
-    content: json['content'],
+    subHeading: json['subHeading'],
+    description: json['content'],
     imageUrls: List<String>.from(json['imageUrls']),
-    timestamp: DateTime.parse(json['timestamp']),
-    location: Location.fromJson(json['location']),
+    timestamp: DateTime.tryParse(json['timestamp'] ?? ''),
+    location: json['location'] != null ? Location.fromJson(json['location']) : null,
     categoryId: json['categoryId'],
     createdBy: json['createdBy'],
     verifiedBy: json['verifiedBy'],
     status: json['status'],
     likes: json['likes'] ?? 0,
     views: json['views'] ?? 0,
+    shares: json['shares'] ?? 0,
   );
 
   Map<String, dynamic> toJson() => {
     'newsId': newsId,
     'title': title,
-    'content': content,
+    'subHeading': subHeading,
+    'content': description,
     'imageUrls': imageUrls,
-    'timestamp': timestamp.toIso8601String(),
-    'location': location.toJson(),
+    'timestamp': timestamp?.toIso8601String(),
+    'location': location?.toJson(),
     'categoryId': categoryId,
     'createdBy': createdBy,
     'verifiedBy': verifiedBy,
     'status': status,
     'likes': likes,
     'views': views,
+    'shares': shares,
   };
 
   News copyWith({
     String? title,
+    String? subHeading,
     String? content,
     List<String>? imageUrls,
     DateTime? timestamp,
@@ -70,11 +78,13 @@ class News {
     String? status,
     int? likes,
     int? views,
+    int? shares,
   }) {
     return News(
       newsId: newsId,
       title: title ?? this.title,
-      content: content ?? this.content,
+      subHeading: subHeading ?? this.subHeading,
+      description: content ?? this.description,
       imageUrls: imageUrls ?? this.imageUrls,
       timestamp: timestamp ?? this.timestamp,
       location: location ?? this.location,
@@ -84,12 +94,14 @@ class News {
       status: status ?? this.status,
       likes: likes ?? this.likes,
       views: views ?? this.views,
+      shares: shares ?? this.shares,
     );
   }
 
   @override
   String toString() => 'News($title, $status, $views views)';
 }
+
 
 class GeoPoint {
   final double lat;

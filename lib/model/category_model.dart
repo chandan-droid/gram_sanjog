@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
+
 class Category {
   final String categoryId;
   final String name;
-  final String icon;
+  final IconData icon;
 
   Category({
     required this.categoryId,
@@ -28,7 +30,7 @@ class Category {
   Category copyWith({
     String? categoryId,
     String? name,
-    String? icon,
+    IconData? icon,
   }) {
     return Category(
       categoryId: categoryId ?? this.categoryId,
