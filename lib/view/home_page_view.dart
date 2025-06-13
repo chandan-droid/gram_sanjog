@@ -14,6 +14,7 @@ import '../common/widgets/news_carousal.dart';
 import '../common/widgets/search_bar.dart';
 import '../controller/bookmark_controller.dart';
 import '../model/news_model.dart';
+import 'detailed_news_view.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -32,14 +33,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text("Gram Sanjog",
-      //     style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),
-      //   ),
-      //   centerTitle: true,
-      // ),
       body: SafeArea(
-        minimum: const EdgeInsets.symmetric(horizontal: 10,vertical: 50),
+        minimum: const EdgeInsets.only(left: 10,top: 50),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -95,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                     style:  Theme.of(context).textTheme.headlineMedium,)
               ),
               const SizedBox(height: 20,),
-              TopNewsCarousel(),
+              const TopNewsCarousel(),
 
               const SizedBox(height: 20),
               Align(alignment:Alignment.topLeft,
@@ -176,16 +171,6 @@ class _HomePageState extends State<HomePage> {
                   child: Text("Editor's Picks",
                     style:  Theme.of(context).textTheme.headlineMedium,)
               ),
-              //  NewsCardCompact(
-              //    newsId: ,
-              //   imageUrl: 'https://source.unsplash.com/random/800x600?news',
-              //   title: 'Local Festival Celebrations Begin',
-              //   subHeading: 'People across the region are gathering to celebrate the annual event.',
-              //   upvotes: 2,
-              //   shares: 3,
-              //   isBookmarked: true,
-              // )
-
             ],
           ),
         ),
