@@ -111,8 +111,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://randomuser.me/api/portraits/men/32.jpg'),
+                    CircleAvatar(
+                      backgroundImage: AssetImage("assets/logo/gram_sanjog_app_icon.png"),
                       radius: 16,
                     ),
                     const SizedBox(width: 8),
