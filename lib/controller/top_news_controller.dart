@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
-import '../common/SAMPLE_NEWS.dart';
 import '../model/news_model.dart';
+import '../service/news_service.dart';
 
 class TopNewsController extends GetxController {
   final RxList<News> topNewsList = <News>[].obs;
+  final RxBool isLoading = false.obs;
+  final RxString errorMessage = ''.obs;
+
+  final NewsService newsService = NewsService();
 
   @override
   void onInit() {
@@ -11,7 +15,23 @@ class TopNewsController extends GetxController {
     fetchTopNews();
   }
 
-  void fetchTopNews() async {
-    topNewsList.assignAll(sampleNewsList.where((news) => news.views! > 1000).take(10).toList());
+  Future<void> fetchTopNews() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final allNews = await newsService.getAllNews();
+      print('[TopNews] Total news fetched: ${allNews.length}');
+
+      final topNews = allNews.where((news) => (news.views ?? 0) > 1000).toList();
+
+      topNewsList.assignAll(topNews);
+
+    } catch (e) {
+      errorMessage.value = 'Failed to fetch top news.';
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
+

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class News {
   final String newsId;
   final String title;
@@ -31,22 +33,25 @@ class News {
     this.shares = 0,
   });
 
-  factory News.fromJson(Map<String, dynamic> json) => News(
-    newsId: json['newsId'],
-    title: json['title'],
-    subHeading: json['subHeading'],
-    description: json['content'],
-    imageUrls: List<String>.from(json['imageUrls']),
-    timestamp: DateTime.tryParse(json['timestamp'] ?? ''),
-    location: json['location'] != null ? Location.fromJson(json['location']) : null,
-    categoryId: json['categoryId'],
-    createdBy: json['createdBy'],
-    verifiedBy: json['verifiedBy'],
-    status: json['status'],
-    likes: json['likes'] ?? 0,
-    views: json['views'] ?? 0,
-    shares: json['shares'] ?? 0,
-  );
+  factory News.fromJson(Map<String, dynamic> json) {
+    return News(
+      newsId: json['newsId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      subHeading: json['subHeading'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      categoryId: json['categoryId'] as String? ?? '',
+      createdBy: json['createdBy'] as String? ?? '',
+      imageUrls: (json['imageUrls'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ??
+          [],
+      views: json['views'] as int? ?? 0,
+      likes: json['likes'] as int? ?? 0,
+      shares: json['shares'] as int? ?? 0,
+      status: json['status'] as String? ?? '',
+      timestamp: (json['timestamp'] as Timestamp?)?.toDate(),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'newsId': newsId,

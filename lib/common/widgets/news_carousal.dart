@@ -1,10 +1,10 @@
 import "package:flutter/material.dart";
 import "package:get/get.dart";
-import "package:get/get_core/src/get_main.dart";
 import "package:gram_sanjog/common/theme/theme.dart";
 import "package:gram_sanjog/controller/top_news_controller.dart";
 import "../../model/news_model.dart";
 import "../../model/top_news_model.dart";
+import "../../view/detailed_news_view.dart";
 
 
 
@@ -19,7 +19,8 @@ class TopNewsCarousel extends StatefulWidget{
 }
 
 class _NewsCarouselState extends State<TopNewsCarousel>{
-  final TopNewsController topNewsController = Get.find<TopNewsController>();
+
+  final topNewsController = Get.put(TopNewsController());
   final PageController pageController = PageController(viewportFraction: 0.9,initialPage: 0);
   int currentPage = 0;
 
@@ -31,6 +32,15 @@ class _NewsCarouselState extends State<TopNewsCarousel>{
        SizedBox(
          height: 230,
          child: Obx((){
+           if (topNewsController.isLoading.value) {
+             return const Center(child: CircularProgressIndicator());
+           }
+           if (topNewsController.topNewsList.isEmpty) {
+             return  SizedBox(
+               height: 230,
+               child: Center(child: Text(topNewsController.errorMessage.value)),
+             );
+           }
            return PageView.builder(
                controller: pageController,
                itemCount: topNewsController.topNewsList.length,
@@ -40,55 +50,61 @@ class _NewsCarouselState extends State<TopNewsCarousel>{
                  });
                },
                itemBuilder:(context,index){
-                 final news = topNewsController.topNewsList[index];
-                 return AnimatedContainer(
 
-                   duration:const Duration(milliseconds: 300),
-                   margin: EdgeInsets.symmetric(horizontal: 8, vertical: index == currentPage ? 4 : 12),
-                   decoration: BoxDecoration(
-                     borderRadius: BorderRadius.circular(16),
-                     boxShadow: [
-                       BoxShadow(
-                         color: Theme.of(context).shadowColor.withOpacity(0.1),
-                         blurRadius: 6,
-                         offset: const Offset(0, 4),
-                       ),
-                     ],
-                     color: Theme.of(context).cardColor,
-                   ),
-                   child: ClipRRect(
-                     borderRadius: BorderRadius.circular(10),
-                     child: Stack(
-                       fit: StackFit.expand,
-                       children: [
-                         Image.network(
-                           news.imageUrls[0],
-                           fit: BoxFit.cover,
-                           errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+                 final news = topNewsController.topNewsList[index];
+                 final imageUrl = (news.imageUrls.isNotEmpty) ? news.imageUrls[0] : '';
+                 return GestureDetector(
+                   onTap: (){
+                     Get.to(NewsDetailScreen(newsId:news.newsId,));
+                   },
+                   child: AnimatedContainer(
+                     duration:const Duration(milliseconds: 300),
+                     margin: EdgeInsets.symmetric(horizontal: 8, vertical: index == currentPage ? 4 : 12),
+                     decoration: BoxDecoration(
+                       borderRadius: BorderRadius.circular(16),
+                       boxShadow: [
+                         BoxShadow(
+                           color: Theme.of(context).shadowColor.withOpacity(0.1),
+                           blurRadius: 6,
+                           offset: const Offset(0, 4),
                          ),
-                         Container(
-                           decoration: BoxDecoration(
-                             gradient: LinearGradient(
-                               colors: [Colors.black.withOpacity(0.8), Colors.transparent],
-                               begin: Alignment.bottomCenter,
-                               end: Alignment.topCenter,
-                             ),
-                           ),
-                         ),
-                         Positioned(
-                           bottom: 12,
-                           left: 12,
-                           right: 12,
-                           child: Text(news.title,
-                             style: appTheme.textTheme.headlineMedium?.copyWith(
-                               color: Colors.white,
-                               fontWeight: FontWeight.bold,
-                             ),
-                             maxLines: 2,
-                             overflow: TextOverflow.ellipsis,
-                           ),
-                         )
                        ],
+                       color: Theme.of(context).cardColor,
+                     ),
+                     child: ClipRRect(
+                       borderRadius: BorderRadius.circular(10),
+                       child: Stack(
+                         fit: StackFit.expand,
+                         children: [
+                           Image.network(
+                             imageUrl,
+                             fit: BoxFit.cover,
+                             errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+                           ),
+                           Container(
+                             decoration: BoxDecoration(
+                               gradient: LinearGradient(
+                                 colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+                                 begin: Alignment.bottomCenter,
+                                 end: Alignment.topCenter,
+                               ),
+                             ),
+                           ),
+                           Positioned(
+                             bottom: 12,
+                             left: 12,
+                             right: 12,
+                             child: Text(news.title,
+                               style: appTheme.textTheme.headlineMedium?.copyWith(
+                                 color: Colors.white,
+                                 fontWeight: FontWeight.bold,
+                               ),
+                               maxLines: 2,
+                               overflow: TextOverflow.ellipsis,
+                             ),
+                           )
+                         ],
+                       ),
                      ),
                    ),
                  );

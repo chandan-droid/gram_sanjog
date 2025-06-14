@@ -6,14 +6,27 @@ class NewsService {
 
   // Get all news and convert to News model object list
   Future<List<News>> getAllNews() async {
-    final snapshot = await localNewsCollection.get();
+    try {
+      final snapshot = await localNewsCollection.get();
 
-    return snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      data['newsId'] = doc.id; // Attach doc ID
-      return News.fromJson(data);
-    }).toList();
+      return snapshot.docs.map((doc) {
+        try {
+          final data = doc.data() as Map<String, dynamic>;
+          data['newsId'] = doc.id;
+          return News.fromJson(data);
+
+        } catch (e) {
+          print(' Failed to parse doc ${doc.id}: $e');
+          return null;
+        }
+      }).whereType<News>().toList();
+
+    } catch (e, stack) {
+      print('Firestore fetch error: $e');
+      return [];
+    }
   }
+
 
   // Get single news by ID
   Future<News?> getNewsById(String id) async {

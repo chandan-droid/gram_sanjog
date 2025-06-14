@@ -1,12 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/controller/category_controller.dart';
-
-import '../common/SAMPLE_NEWS.dart';
+import 'package:gram_sanjog/controller/news_controller.dart';
 import '../common/constants.dart';
 import '../common/widgets/category_tile.dart';
 import '../common/widgets/compact_news_card.dart';
@@ -25,10 +22,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  CategoryController categoryController = Get.put(CategoryController());
-  final bookmarkController = Get.find<BookmarkController>();
-
-
+  CategoryController categoryController = Get.find();
+  NewsController newsController = Get.find();
+  BookmarkController bookmarkController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +86,7 @@ class _HomePageState extends State<HomePage> {
                     style:  Theme.of(context).textTheme.headlineMedium,)
               ),
               const SizedBox(height: 20,),
+
               const TopNewsCarousel(),
 
               const SizedBox(height: 20),
@@ -137,8 +134,10 @@ class _HomePageState extends State<HomePage> {
                 //height: 200,
                 child: Obx((){
                   var selectedCategoryId = categoryController.selectedCategoryId.value;
-                  final filteredNews = sampleNewsList.where((news) => news.categoryId == selectedCategoryId).take(5).toList();
-
+                  final filteredNews = newsController.newsList.where((news) => news.categoryId == selectedCategoryId).take(5).toList();
+                  if (newsController.isLoading.value) {
+                    return const CircularProgressIndicator();
+                  }
                   if (filteredNews.isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.all(20),
