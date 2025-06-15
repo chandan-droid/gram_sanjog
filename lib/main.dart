@@ -4,6 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:gram_sanjog/bindings/bookmark_binding.dart';
+import 'package:gram_sanjog/controller/news_controller.dart';
+import 'package:gram_sanjog/view/bookmark_view.dart';
 import 'package:gram_sanjog/view/home_page_view.dart';
 import 'bindings/home_bindings.dart';
 import 'common/theme/theme.dart';
@@ -20,6 +23,7 @@ void main() async{
   await GetStorage.init();
   Get.put(BookmarkController());
   Get.put(TopNewsController());
+  Get.lazyPut(() => NewsController());
 
   runApp(const MyApp());
 }

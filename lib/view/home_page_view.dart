@@ -11,6 +11,7 @@ import '../common/widgets/news_carousal.dart';
 import '../common/widgets/search_bar.dart';
 import '../controller/bookmark_controller.dart';
 import '../model/news_model.dart';
+import 'bookmark_view.dart';
 import 'detailed_news_view.dart';
 
 
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(width: 10),
                   Flexible(
                     flex:1,
-                    child: Container(//location
+                    child: Container(//bookmark
                       height: 40,
                       width: 40,
                       decoration: BoxDecoration(
@@ -54,6 +55,7 @@ class _HomePageState extends State<HomePage> {
                       child: IconButton(
                           onPressed: () {
                             //route to saved news page
+                            Get.to(()=>BookmarkScreen());
                           },
                           icon: const Icon(Icons.bookmark)
                       ),
