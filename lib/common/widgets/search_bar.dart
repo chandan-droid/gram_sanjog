@@ -1,83 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:gram_sanjog/common/widgets/search_delegate.dart';
 
-class SearchBarWidget extends StatefulWidget {
-  final ValueChanged<String>? onSearch;
+class SearchBarWidget extends StatelessWidget {
   final String hintText;
 
   const SearchBarWidget({
     super.key,
-    this.onSearch,
-    this.hintText = 'Search...',
+    this.hintText = 'Search News...',
   });
 
   @override
-  State<SearchBarWidget> createState() => _SearchBarWidgetState();
-}
-
-class _SearchBarWidgetState extends State<SearchBarWidget> {
-  final TextEditingController _controller = TextEditingController();
-  bool _showClearButton = false; //initially don't show clear button
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      setState(() {
-        _showClearButton = _controller.text.isNotEmpty; //show clear button only when there is text in search bar
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _onSearch() {
-    if (widget.onSearch != null) {
-      widget.onSearch!(_controller.text);
-    }
-    FocusScope.of(context).unfocus(); //hiding keyboard
-  }
-
-  void _clearSearch() {
-    _controller.clear();
-    if (widget.onSearch != null) {
-      widget.onSearch!('');
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.search, color: Colors.grey),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: widget.hintText,
-                border: InputBorder.none,
-                isDense: true,
-              ),
-              onSubmitted: (_) => _onSearch(),
+    return GestureDetector(
+      onTap: () {
+        //openSearchSheet(context);
+        showSearch(
+          context: context,
+          delegate: NewsSearchDelegate(),
+        );
+      },
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.search, color: Colors.grey),
+            const SizedBox(width: 8),
+            Text(
+              hintText,
+              style: TextStyle(color: Colors.grey[600]),
             ),
-          ),
-          if (_showClearButton)
-            IconButton(
-              icon: const Icon(Icons.clear, size: 20),
-              onPressed: _clearSearch,
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/controller/category_controller.dart';
 import 'package:gram_sanjog/controller/news_controller.dart';
+import 'package:gram_sanjog/controller/search_controller.dart';
+
 import '../common/constants.dart';
 import '../common/widgets/category_tile.dart';
 import '../common/widgets/compact_news_card.dart';
@@ -26,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   CategoryController categoryController = Get.find();
   NewsController newsController = Get.find();
   BookmarkController bookmarkController = Get.find();
-
+  SearchQueryController searchController = Get.put(SearchQueryController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,12 +128,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-
-
-
               const SizedBox(height: 20),
 
-              //listing news for category selected
               SizedBox(
                 //height: 200,
                 child: Obx((){
@@ -179,5 +177,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 
 
