@@ -5,7 +5,7 @@ import '../common/constants.dart';
 import '../model/category_model.dart';
 
 class CategoryController extends GetxController {
-  RxString selectedCategoryId = '0'.obs;
+  RxString selectedCategoryId = '1'.obs;
 
   void selectCategory(String id) {
     if (selectedCategoryId.value == id) {

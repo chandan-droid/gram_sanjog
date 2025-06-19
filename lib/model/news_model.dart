@@ -6,25 +6,29 @@ class News {
   final String? subHeading;
   final String description;
   final List<String> imageUrls;
+  final List<String> videoUrls;
   final DateTime? timestamp;
   final Location? location;
+  final LocationDetails? locationDetails;
   final String? categoryId;
   final String? createdBy;
   final String? verifiedBy;
   final String? status;
-  final int? likes;
-  final int? views;
-  final int? shares;
+   int? likes;
+   int? views;
+  int? shares;
 
-  News({
+  News( {
     required this.newsId,
     required this.title,
     this.subHeading,
     required this.description,
     required this.imageUrls,
+    required this.videoUrls,
     this.timestamp,
     this.location,
-    this.categoryId,
+    required this.locationDetails,
+    required this.categoryId,
     this.createdBy,
     this.verifiedBy,
     this.status,
@@ -45,6 +49,16 @@ class News {
           ?.map((e) => e.toString())
           .toList() ??
           [],
+      videoUrls: (json['videoUrls'] as List<dynamic>?)
+          ?.map((e) => e.toString())
+          .toList() ??
+          [],
+      location: json['location'] != null
+          ? Location.fromJson(json['location'] as Map<String, dynamic>)
+          : null,
+      locationDetails: json['locationDetails'] != null
+          ? LocationDetails.fromJson(json['locationDetails'] as Map<String, dynamic>)
+          : null,
       views: json['views'] as int? ?? 0,
       likes: json['likes'] as int? ?? 0,
       shares: json['shares'] as int? ?? 0,
@@ -61,6 +75,7 @@ class News {
     'imageUrls': imageUrls,
     'timestamp': timestamp?.toIso8601String(),
     'location': location?.toJson(),
+    'locationDetails': locationDetails?.toJson(),
     'categoryId': categoryId,
     'createdBy': createdBy,
     'verifiedBy': verifiedBy,
@@ -75,8 +90,10 @@ class News {
     String? subHeading,
     String? content,
     List<String>? imageUrls,
+    List<String>? videoUrls,
     DateTime? timestamp,
     Location? location,
+    LocationDetails? locationDetails,
     String? categoryId,
     String? createdBy,
     String? verifiedBy,
@@ -91,8 +108,10 @@ class News {
       subHeading: subHeading ?? this.subHeading,
       description: content ?? this.description,
       imageUrls: imageUrls ?? this.imageUrls,
+      videoUrls: videoUrls ?? this.videoUrls,
       timestamp: timestamp ?? this.timestamp,
       location: location ?? this.location,
+      locationDetails: locationDetails ?? this.locationDetails,
       categoryId: categoryId ?? this.categoryId,
       createdBy: createdBy ?? this.createdBy,
       verifiedBy: verifiedBy ?? this.verifiedBy,
@@ -139,5 +158,39 @@ class Location {
   Map<String, dynamic> toJson() => {
     'geopoint': geopoint.toJson(),
     'geohash': geohash,
+  };
+}
+
+class LocationDetails {
+  final String country;
+  final String state;
+  final String district;
+  final String block;
+  final String gp;
+
+  LocationDetails({
+    required this.country,
+    required this.state,
+    required this.district,
+    required this.block,
+    required this.gp,
+  });
+
+  factory LocationDetails.fromJson(Map<String, dynamic> json) {
+    return LocationDetails(
+      country: json['country'] ?? '',
+      state: json['state'] ?? '',
+      district: json['district'] ?? '',
+      block: json['block'] ?? '',
+      gp: json['gp'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'country': country,
+    'state': state,
+    'district': district,
+    'block': block,
+    'gp': gp,
   };
 }

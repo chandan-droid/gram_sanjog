@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../model/news_model.dart';
 
 class NewsService {
@@ -16,13 +17,17 @@ class NewsService {
           return News.fromJson(data);
 
         } catch (e) {
-          print(' Failed to parse doc ${doc.id}: $e');
+          if (kDebugMode) {
+            print(' Failed to parse doc ${doc.id}: $e');
+          }
           return null;
         }
       }).whereType<News>().toList();
 
     } catch (e, stack) {
-      print('Firestore fetch error: $e');
+      if (kDebugMode) {
+        print('Firestore fetch error: $e');
+      }
       return [];
     }
   }
@@ -39,5 +44,17 @@ class NewsService {
     } else {
       return null;
     }
+  }
+
+  Future<void> incrementLikes(String newsId) async {
+    await localNewsCollection.doc(newsId).update({'likes': FieldValue.increment(1)});
+  }
+
+  Future<void> incrementViews(String newsId) async {
+    await localNewsCollection.doc(newsId).update({'views': FieldValue.increment(1)});
+  }
+
+  Future<void> incrementShares(String newsId) async {
+    await localNewsCollection.doc(newsId).update({'shares': FieldValue.increment(1)});
   }
 }

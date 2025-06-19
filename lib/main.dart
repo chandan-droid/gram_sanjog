@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'News App',
       debugShowCheckedModeBanner: false,
-      theme:appTheme,
       initialRoute: '/home',
       getPages: [
         GetPage(

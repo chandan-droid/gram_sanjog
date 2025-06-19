@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/common/widgets/search_delegate.dart';
 
 class SearchBarWidget extends StatelessWidget {
@@ -23,7 +24,7 @@ class SearchBarWidget extends StatelessWidget {
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.grey[300],
+          color: AppColors.iconPrimary,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

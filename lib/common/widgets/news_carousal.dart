@@ -95,7 +95,7 @@ class _NewsCarouselState extends State<TopNewsCarousel>{
                              left: 12,
                              right: 12,
                              child: Text(news.title,
-                               style: appTheme.textTheme.headlineMedium?.copyWith(
+                               style:const TextStyle(
                                  color: Colors.white,
                                  fontWeight: FontWeight.bold,
                                ),
@@ -124,8 +124,8 @@ class _NewsCarouselState extends State<TopNewsCarousel>{
                   height: 8,
                   decoration: BoxDecoration(
                     color: currentPage == index
-                        ? appTheme.primaryColor
-                        : appTheme.primaryColor.withOpacity(0.3),
+                        ? AppColors.primary
+                        : AppColors.primary.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );

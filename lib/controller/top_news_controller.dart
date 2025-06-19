@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../model/news_model.dart';
 import '../service/news_service.dart';
@@ -21,7 +22,9 @@ class TopNewsController extends GetxController {
       errorMessage.value = '';
 
       final allNews = await newsService.getAllNews();
-      print('[TopNews] Total news fetched: ${allNews.length}');
+      if (kDebugMode) {
+        print('[TopNews] Total news fetched: ${allNews.length}');
+      }
 
       final topNews = allNews.where((news) => (news.views ?? 0) > 1000).toList();
 

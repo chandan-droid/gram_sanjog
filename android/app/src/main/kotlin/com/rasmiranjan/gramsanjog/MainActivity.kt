@@ -1,4 +1,4 @@
-package com.example.gram_sanjog
+package com.rasmiranjan.gramsanjog
 
 import io.flutter.embedding.android.FlutterActivity
 

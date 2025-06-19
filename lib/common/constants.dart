@@ -5,7 +5,7 @@ import '../model/news_model.dart';
 import '../model/top_news_model.dart';
 
 final List<Category> categories = [
-  Category(categoryId: '0', name: 'For You', icon: Icons.recommend),
+  //Category(categoryId: '0', name: 'For You', icon: Icons.recommend),
   Category(categoryId: '1', name: 'Politics', icon: Icons.gavel),
   Category(categoryId: '2', name: 'Sports', icon: Icons.sports_soccer),
   Category(categoryId: '3', name: 'Technology', icon: Icons.computer),

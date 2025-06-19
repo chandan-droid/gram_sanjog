@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCmXn8jGX8lH9F4QCKLaxQrCk5t-d3zROI',
-    appId: '1:271452705878:android:1aac2741d969f8948c17f7',
+    appId: '1:271452705878:android:f2fe30be0a40da118c17f7',
     messagingSenderId: '271452705878',
     projectId: 'gram-sanjog',
     storageBucket: 'gram-sanjog.firebasestorage.app',
@@ -66,11 +66,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDnJjX0SkwQ5MUGy1MvcnLcdHVAbq2Fs94',
-    appId: '1:271452705878:ios:c09dd2084e4aaf798c17f7',
+    appId: '1:271452705878:ios:7c62daa73912dc738c17f7',
     messagingSenderId: '271452705878',
     projectId: 'gram-sanjog',
     storageBucket: 'gram-sanjog.firebasestorage.app',
-    iosBundleId: 'com.example.gramSanjog',
+    iosBundleId: 'com.rasmiranjan.gramsanjog',
   );
 
 }
