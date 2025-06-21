@@ -112,25 +112,28 @@ class _NewsCarouselState extends State<TopNewsCarousel>{
          })
        ),
        const SizedBox(height: 10,),
-       Row(
-         mainAxisAlignment: MainAxisAlignment.center,
-         children: List.generate(
-             topNewsController.topNewsList.length, //length
-             (index){ //generator
-                return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: currentPage == index ? 15 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: currentPage == index
-                        ? AppColors.primary
-                        : AppColors.primary.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                );
-             }
-             )
+       Obx((){
+         return  Row(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: List.generate(
+               topNewsController.topNewsList.length, //length
+               (index){ //generator
+                  return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: currentPage == index ? 15 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: currentPage == index
+                          ? AppColors.primary
+                          : AppColors.primary.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  );
+               }
+               )
+         );
+       }
        )
      ],
    );

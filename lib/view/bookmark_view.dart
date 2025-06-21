@@ -18,7 +18,7 @@ class BookmarkScreen extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text("Saved News")),
+        title: const Center(child: Text("Saved Contents")),
       ),
       body: Obx((){
 

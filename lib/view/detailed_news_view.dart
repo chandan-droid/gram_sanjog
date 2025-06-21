@@ -11,6 +11,7 @@ import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../common/widgets/youtube_player_widget.dart';
+import '../controller/location_controller.dart';
 
 
 
@@ -28,6 +29,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   final BookmarkController bookmarkController = Get.put(BookmarkController());
   final CategoryController categoryController = Get.put(CategoryController());
   final NewsController newsController = Get.put(NewsController());
+  final LocationController locationController = Get.put(LocationController());
 
   final PageController _pageController = PageController(viewportFraction: 1, keepPage: true);
   int _currentPage = 0;
@@ -37,6 +39,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       newsController.getNewsById(widget.newsId);
+      locationController.geohashFromLocationData(newsController.currentNews.value?.locationDetails);
     });
 
     _pageController.addListener(() {
@@ -121,15 +124,18 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                           );
                         } else {
                           final videoUrl = news.videoUrls[index - news.imageUrls.length];
-                          return Center(child: YouTubePlayerWidget(videoUrl: videoUrl));
+                          return AspectRatio(
+                              aspectRatio: 16/9,
+                              child: SimpleYoutubePlayer(videoUrl: videoUrl));
                         }
                       },
                     ),
                     // Left arrow
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      // left: 0,
+                      // top: 20,
+                      // bottom: 0,
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back_ios, color: Colors.white70),
                         onPressed: () {
@@ -140,10 +146,11 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       ),
                     ),
                     // Right arrow
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
+                    Align(
+                      alignment: Alignment.centerRight,
+                      // right: 0,
+                      // top: 0,
+                      // bottom: 0,
                       child: IconButton(
                         icon: const Icon(Icons.arrow_forward_ios, color: Colors.white70),
                         onPressed: () {

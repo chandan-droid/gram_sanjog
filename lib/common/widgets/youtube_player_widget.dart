@@ -1,39 +1,52 @@
-import 'package:flutter/cupertino.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
-class YouTubePlayerWidget extends StatefulWidget {
+class SimpleYoutubePlayer extends StatefulWidget {
   final String videoUrl;
-  const YouTubePlayerWidget({super.key, required this.videoUrl});
+
+  const SimpleYoutubePlayer({super.key, required this.videoUrl});
 
   @override
-  State<YouTubePlayerWidget> createState() => _YouTubePlayerWidgetState();
+  State<SimpleYoutubePlayer> createState() => _SimpleYoutubePlayerState();
 }
 
-class _YouTubePlayerWidgetState extends State<YouTubePlayerWidget> {
+class _SimpleYoutubePlayerState extends State<SimpleYoutubePlayer> {
   late YoutubePlayerController _controller;
 
   @override
   void initState() {
-    final videoId = YoutubePlayer.convertUrlToId(widget.videoUrl)!;
-    _controller = YoutubePlayerController(
-      initialVideoId: videoId,
-      flags: const YoutubePlayerFlags(autoPlay: false),
-    );
     super.initState();
-  }
+    final videoId = YoutubePlayerController.convertUrlToId(widget.videoUrl);
 
-  @override
-  Widget build(BuildContext context) {
-    return YoutubePlayer(
-      controller: _controller,
-      showVideoProgressIndicator: true,
+    _controller = YoutubePlayerController.fromVideoId(
+      videoId: videoId!,
+      params: const YoutubePlayerParams(
+        showControls: true,
+        //showFullscreenButton: true,
+        mute: false,
+        strictRelatedVideos: true,
+        showVideoAnnotations: false, 
+
+      ),
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller.close();
     super.dispose();
   }
-}
 
+  @override
+  Widget build(BuildContext context) {
+    return YoutubePlayerScaffold(
+      controller: _controller,
+      builder: (context, player) {
+        return AspectRatio(
+          aspectRatio: 16 / 9,
+          child: player,
+        );
+      },
+    );
+  }
+}

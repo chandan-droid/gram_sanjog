@@ -6,7 +6,7 @@ class AppColors {
   static const Color secondary = Color(0xFF34571C);   // Dark Green - used for secondary UI
   static const Color accent = Color(0xFF820707);      // Maroon Red - used for CTAs
   static const Color highlight = Color(0xFF6C8E2E);   // Light Green - used for emphasis
-  static const Color background = Color(0xFFD6D6D6);  // Light Gray - background areas
+  static const Color background = Colors.white;  // Light Gray - background areas
 
   // === Text Colors ===
   static const Color textPrimary = primary;           // Headlines, titles

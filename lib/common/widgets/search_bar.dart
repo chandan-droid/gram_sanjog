@@ -7,7 +7,7 @@ class SearchBarWidget extends StatelessWidget {
 
   const SearchBarWidget({
     super.key,
-    this.hintText = 'Search News...',
+    this.hintText = 'Search Information...',
   });
 
   @override

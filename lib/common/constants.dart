@@ -13,6 +13,6 @@ final List<Category> categories = [
   Category(categoryId: '5', name: 'Entertainment', icon: Icons.movie),
   Category(categoryId: '6', name: 'Health', icon: Icons.health_and_safety),
 ];
+final List<String> languages =['Odia', 'Hindi', 'English'];
 
-
-
+final List<String> contentType = ['video', 'shorts', 'post'];

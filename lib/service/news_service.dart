@@ -3,12 +3,13 @@ import 'package:flutter/foundation.dart';
 import '../model/news_model.dart';
 
 class NewsService {
-  final CollectionReference localNewsCollection = FirebaseFirestore.instance.collection('news');
+  final CollectionReference newsCollectionRef = FirebaseFirestore.instance.collection('news');
+  late String generatedId ;
 
   // Get all news and convert to News model object list
   Future<List<News>> getAllNews() async {
     try {
-      final snapshot = await localNewsCollection.get();
+      final snapshot = await newsCollectionRef.get();
 
       return snapshot.docs.map((doc) {
         try {
@@ -32,10 +33,28 @@ class NewsService {
     }
   }
 
+  Future<void> postNews(News news) async{
+    try{
+      final docRef = newsCollectionRef.doc(); // generate Firestore doc ref
+
+      generatedId = docRef.id; //set the doc id into generatedId variable for access into controller
+      final newsWithId = news.copyWith(newsId: generatedId); //create a news with newsId = GeneratedId
+      await docRef.set(newsWithId.toJson()); //update the firebase doc with newsId=doc id
+
+      if (kDebugMode) {
+        print("✅ News posted successfully.");
+      }
+    }catch (e){
+      if (kDebugMode) {
+        print("❌ Error posting news: $e");
+      }
+    }
+  }
+
 
   // Get single news by ID
   Future<News?> getNewsById(String id) async {
-    final doc = await localNewsCollection.doc(id).get();
+    final doc = await newsCollectionRef.doc(id).get();
 
     if (doc.exists) {
       final data = doc.data() as Map<String, dynamic>;
@@ -47,14 +66,14 @@ class NewsService {
   }
 
   Future<void> incrementLikes(String newsId) async {
-    await localNewsCollection.doc(newsId).update({'likes': FieldValue.increment(1)});
+    await newsCollectionRef.doc(newsId).update({'likes': FieldValue.increment(1)});
   }
 
   Future<void> incrementViews(String newsId) async {
-    await localNewsCollection.doc(newsId).update({'views': FieldValue.increment(1)});
+    await newsCollectionRef.doc(newsId).update({'views': FieldValue.increment(1)});
   }
 
   Future<void> incrementShares(String newsId) async {
-    await localNewsCollection.doc(newsId).update({'shares': FieldValue.increment(1)});
+    await newsCollectionRef.doc(newsId).update({'shares': FieldValue.increment(1)});
   }
 }

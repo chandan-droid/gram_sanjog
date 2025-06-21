@@ -12,11 +12,17 @@ class News {
   final LocationDetails? locationDetails;
   final String? categoryId;
   final String? createdBy;
+  final String? updatedBy;
+  final String? updatedAt;
   final String? verifiedBy;
   final String? status;
    int? likes;
    int? views;
   int? shares;
+  // final List<Report> reports;
+  // final List<Source> sources;
+  // final String subcategory;
+  // final String contentType;
 
   News( {
     required this.newsId,
@@ -30,6 +36,8 @@ class News {
     required this.locationDetails,
     required this.categoryId,
     this.createdBy,
+    this.updatedBy,
+    this.updatedAt,
     this.verifiedBy,
     this.status,
     this.likes = 0,
@@ -86,6 +94,7 @@ class News {
   };
 
   News copyWith({
+    String? newsId,
     String? title,
     String? subHeading,
     String? content,
@@ -103,7 +112,7 @@ class News {
     int? shares,
   }) {
     return News(
-      newsId: newsId,
+      newsId: newsId ?? this.newsId,
       title: title ?? this.title,
       subHeading: subHeading ?? this.subHeading,
       description: content ?? this.description,
@@ -167,13 +176,15 @@ class LocationDetails {
   final String district;
   final String block;
   final String gp;
+  final String? village;
 
-  LocationDetails({
+  LocationDetails( {
     required this.country,
     required this.state,
     required this.district,
     required this.block,
     required this.gp,
+    this.village,
   });
 
   factory LocationDetails.fromJson(Map<String, dynamic> json) {
@@ -183,6 +194,7 @@ class LocationDetails {
       district: json['district'] ?? '',
       block: json['block'] ?? '',
       gp: json['gp'] ?? '',
+      village: json['village']??''
     );
   }
 
@@ -192,5 +204,6 @@ class LocationDetails {
     'district': district,
     'block': block,
     'gp': gp,
+    'village':village
   };
 }

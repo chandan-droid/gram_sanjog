@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:gram_sanjog/service/news_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../common/theme/theme.dart';
 import '../model/news_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,8 @@ class NewsController extends GetxController{
   var isLoading = true.obs;
   RxString errorMessage = ''.obs;
   RxSet<String> likedNewsIds = <String>{}.obs;
+
+
 
 
 
@@ -55,6 +58,18 @@ class NewsController extends GetxController{
       return;
     }finally{
       isLoading.value = false;
+    }
+  }
+
+  Future<void> postNews(News news)async{
+    try{
+      isLoading.value = true;
+      await newsService.postNews(news);
+      Get.snackbar("Success", "News Submitted",
+          backgroundColor: AppColors.highlight, colorText: AppColors.buttonSecondary);
+    }catch(e){
+      Get.snackbar("Error", "Failed to post news",
+          backgroundColor: AppColors.highlight, colorText: AppColors.buttonSecondary);
     }
   }
 
