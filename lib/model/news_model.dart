@@ -18,7 +18,7 @@ class News {
   final String? status;
    int? likes;
    int? views;
-  int? shares;
+   int? shares;
   // final List<Report> reports;
   // final List<Source> sources;
   // final String subcategory;
@@ -79,13 +79,16 @@ class News {
     'newsId': newsId,
     'title': title,
     'subHeading': subHeading,
-    'content': description,
+    'description': description,
     'imageUrls': imageUrls,
-    'timestamp': timestamp?.toIso8601String(),
+    'videoUrls': videoUrls,
+    'timestamp': timestamp,
     'location': location?.toJson(),
     'locationDetails': locationDetails?.toJson(),
     'categoryId': categoryId,
     'createdBy': createdBy,
+    'updatedBy': updatedBy,
+    'updatedAt': updatedAt,
     'verifiedBy': verifiedBy,
     'status': status,
     'likes': likes,
@@ -105,6 +108,8 @@ class News {
     LocationDetails? locationDetails,
     String? categoryId,
     String? createdBy,
+    String? updatedBy,
+    String? updatedAt,
     String? verifiedBy,
     String? status,
     int? likes,
@@ -123,6 +128,8 @@ class News {
       locationDetails: locationDetails ?? this.locationDetails,
       categoryId: categoryId ?? this.categoryId,
       createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      updatedAt: updatedAt ?? this.updatedAt,
       verifiedBy: verifiedBy ?? this.verifiedBy,
       status: status ?? this.status,
       likes: likes ?? this.likes,

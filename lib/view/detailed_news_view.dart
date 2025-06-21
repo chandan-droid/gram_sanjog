@@ -178,7 +178,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      DateFormat.yMd().add_jm().format(news.timestamp ?? DateTime.now()),
+                      DateFormat.yMMMMEEEEd().add_jm().format(news.timestamp ?? DateTime.now()),
                       style: const TextStyle(color:AppColors.textMuted),
                     ),
                   ],

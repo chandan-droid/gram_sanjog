@@ -5,6 +5,7 @@ import 'package:gram_sanjog/common/constants.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/controller/news_controller.dart';
 import 'package:gram_sanjog/model/news_model.dart';
+import 'package:intl/intl.dart';
 
 class AddNewsPage extends StatefulWidget {
   const AddNewsPage({super.key});
@@ -160,13 +161,22 @@ class _AddNewsPageState extends State<AddNewsPage> {
                         gp: locationControllers['gp*']!.text.trim(),
                       );
                       final news = News(
-                          newsId: '',
-                          title: titleController.text,
-                          description: descriptionController.text,
-                          imageUrls: imageUrlControllers.map((controller) => controller.text).toList(),
-                          videoUrls: videoUrlControllers.map((controller) => controller.text).toList(),
-                          locationDetails: location,
-                          categoryId: categoryController.text
+                        newsId: '',
+                        title: titleController.text,
+                        subHeading: subHeadingController.text,
+                        description: descriptionController.text,
+                        imageUrls: imageUrlControllers.map((c) => c.text).toList(),
+                        videoUrls: videoUrlControllers.map((c) => c.text).toList(),
+                        timestamp:DateTime.now(),
+                        location: null,
+                        locationDetails: location,
+                        categoryId: categoryController.text,
+                        createdBy: adminController.text,
+                        verifiedBy: null,
+                        status: "pending",
+                        likes: 0,
+                        views: 0,
+                        shares: 0,
                       );
                       if (kDebugMode) {
                         print('Title: ${titleController.text}');
@@ -190,7 +200,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
                           print('$key: ${controller.text}');
                         });
                       }
-
+                      print(news.toJson());
                       newsController.postNews(news);
                     }
                   },
@@ -220,11 +230,11 @@ class _AddNewsPageState extends State<AddNewsPage> {
           labelText: label,
           filled: true,
           fillColor: AppColors.inputBackground,
-          focusedBorder:OutlineInputBorder(
-              borderSide:const BorderSide(color: AppColors.buttonSecondary,width: 2)
+          focusedBorder:const OutlineInputBorder(
+              borderSide:BorderSide(color: AppColors.buttonSecondary,width: 2)
           ),
-          errorBorder:OutlineInputBorder(
-              borderSide:const BorderSide(color: AppColors.buttonPrimary,width: 1)
+          errorBorder:const OutlineInputBorder(
+              borderSide:BorderSide(color: AppColors.buttonPrimary,width: 1)
           ),
           border: const OutlineInputBorder(),
         ),
@@ -244,3 +254,14 @@ class _AddNewsPageState extends State<AddNewsPage> {
   }
 }
 
+String formatCustomTimestamp(DateTime dateTime) {
+  final datePart = DateFormat('d MMMM yyyy').format(dateTime); // 19 June 2025
+  final timePart = DateFormat('HH:mm:ss').format(dateTime);     // 17:24:33
+
+  final offset = dateTime.timeZoneOffset;
+  final offsetHours = offset.inHours.abs().toString().padLeft(2, '0');
+  final offsetMinutes = (offset.inMinutes.abs() % 60).toString().padLeft(2, '0');
+  final sign = offset.isNegative ? '-' : '+';
+
+  return '$datePart at $timePart UTC$sign$offsetHours:$offsetMinutes';
+}
