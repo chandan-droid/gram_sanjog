@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gram_sanjog/service/news_service.dart';
 import 'package:path_provider/path_provider.dart';
@@ -11,12 +12,15 @@ import '../model/news_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../view/home_page_view.dart';
+
 
 
 class NewsController extends GetxController{
   final NewsService newsService = NewsService();
 
   var newsList = <News>[].obs;
+  var myNewsList = <News>[].obs;
   var currentNews = Rxn<News>();
   var isLoading = true.obs;
   RxString errorMessage = ''.obs;
@@ -32,6 +36,7 @@ class NewsController extends GetxController{
     getAllNews();
     loadLikedNews();
   }
+
   Future<void> getAllNews()async{
     try{
       isLoading.value = true;
@@ -39,14 +44,31 @@ class NewsController extends GetxController{
       if (kDebugMode) {
         print('[News] Total news fetched: ${newsData.length}');
       }
-
-      newsList.assignAll(newsData as Iterable<News>);
+      final verifiedNews = newsData.where((news) => news.status == 'verified').toList();
+      if (kDebugMode) {
+        print('[News] Total verified news : ${verifiedNews.length}');
+      }
+      newsList.assignAll(verifiedNews as Iterable<News>);
     }catch(e){
        errorMessage = 'Failed to load news' as RxString;
     }finally{
       isLoading.value = false;
     }
   }
+
+  Future<void> getMyNews(String name) async {
+    try {
+      isLoading.value = true;
+      final newsData = await newsService.getAllNews();
+      final myNews = newsData.where((news) => news.createdBy == name).toList();
+      myNewsList.assignAll(myNews);
+    } catch (e) {
+      errorMessage.value = "Failed to load your news";
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 
   Future<void> getNewsById(String Id) async{
     try{
@@ -66,10 +88,11 @@ class NewsController extends GetxController{
       isLoading.value = true;
       await newsService.postNews(news);
       Get.snackbar("Success", "News Submitted",
-          backgroundColor: AppColors.highlight, colorText: AppColors.buttonSecondary);
+          backgroundColor: AppColors.success, colorText:Colors.white);
+      Get.to(const HomePage());
     }catch(e){
       Get.snackbar("Error", "Failed to post news",
-          backgroundColor: AppColors.highlight, colorText: AppColors.buttonSecondary);
+          backgroundColor: AppColors.error, colorText: Colors.white);
     }
   }
 

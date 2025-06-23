@@ -15,6 +15,8 @@ class AuthController extends GetxController {
   final AuthService authService = AuthService();
   Rxn<UserProfile> firebaseUser = Rxn<UserProfile>();
 
+  final signupData = SignupData();
+
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
@@ -34,6 +36,7 @@ class AuthController extends GetxController {
             block: '',
             gpWard: '',
             villageAddress: '',
+            whatsappNumber: '',
           );
         } else {
           return null;
@@ -43,36 +46,87 @@ class AuthController extends GetxController {
     super.onInit();
   }
 
+  Future<void> signup(SignupData signupData) async {
+    try {
+      isLoading.value = true;
 
-  Future<void> login(String email, String pw) async{
-    try{
+      // 1. Create user in Firebase Auth
+      final userCredential = await authService.signUp(signupData.email, signupData.password);
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser != null) {
+        // 2. Assign Firebase UID to your SignupData model
+        signupData.id = firebaseUser.uid;
+
+        // 3. Create user document in Firestore
+        await authService.createUserInFirestore(signupData,firebaseUser.uid);
+
+        Get.snackbar(
+          'Success',
+          'Account created successfully',
+          colorText: Colors.white,
+          backgroundColor: Colors.green,
+        );
+
+
+        Get.to(const HomePage());
+
+      }
+    } on FirebaseAuthException catch (e) {
+      errorMessage.value = e.message ?? 'Signup failed';
+      Get.snackbar('Error', errorMessage.value, colorText: Colors.white, backgroundColor: Colors.red);
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred';
+      Get.snackbar('Error', errorMessage.value, colorText: Colors.white, backgroundColor: Colors.red);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+
+  Future<void> login(String email, String pw) async {
+    try {
       isLoading.value = true;
       await authService.login(email.trim(), pw.trim());
-      Get.snackbar('Success',
-          'Logged in successfully',
-          colorText:AppColors.success
-      );
-      Get.offAll(() => HomePage());
+      Get.snackbar('Success', 'Logged in successfully',
+          backgroundColor: AppColors.success,colorText: Colors.white);
+      Get.offAll(() => const HomePage());
       update();
-    }on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       errorMessage.value = 'login failed';
-      Get.snackbar('Success',
-          'Log in failed.',
-          colorText:AppColors.error
-      );
+      Get.snackbar('Error', 'Log in failed.',
+          backgroundColor: AppColors.error,colorText: Colors.white);
       if (kDebugMode) {
         print("Auth error: ${e.code} - ${e.message}");
       }
-    }finally {
+    } finally {
       isLoading.value = false;
     }
-
   }
+
   Future<void> logout() async {
     await authService.logout();
-    Get.snackbar('Logged out', 'You have been signed out.');
+    Get.snackbar('Logged out', 'You have been signed out.',
+        backgroundColor: AppColors.info,colorText: Colors.white);
     update();
   }
-  bool get isLoggedIn => firebaseUser.value != null;
 
+  bool get isLoggedIn => firebaseUser.value != null;
+}
+
+class SignupData {
+  String id ='';
+  String name = '';
+  String email = '';
+  String phoneNumber = '';
+  String password = '';
+  String confirmPassword = '';
+
+  String whatsappNumber = '';
+  String country = '';
+  String state = '';
+  String district = '';
+  String block = '';
+  String gpWard = '';
+  String villageAddress = '';
 }

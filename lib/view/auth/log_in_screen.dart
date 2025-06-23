@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/controller/auth/auth_controller.dart';
+import 'package:gram_sanjog/view/auth/sign_up_extended_screen.dart';
+import 'package:gram_sanjog/view/auth/sign_up_screen.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -111,16 +113,18 @@ class LoginPage extends StatelessWidget {
                     child: const Text('Login', style: TextStyle(fontSize: 16)),
                   ),
                 ),
-                // const SizedBox(height: 16),
-                //
-                // // Optional: Forgot Password
-                // TextButton(
-                //   onPressed: () {},
-                //   child: const Text(
-                //     'Forgot password?',
-                //     style: TextStyle(color: Colors.grey),
-                //   ),
-                // ),
+                const SizedBox(height: 16),
+
+                // route sign up page
+                TextButton(
+                  onPressed: () {
+                    Get.to(const SignUpPage());
+                  },
+                  child: const Text(
+                    "Don't have an account? Signup",
+                    style: TextStyle(color: AppColors.highlight),
+                  ),
+                ),
               ],
             ),
           ),

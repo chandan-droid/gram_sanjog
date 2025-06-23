@@ -1,21 +1,22 @@
 class UserProfile {
-  final String id;
-  final String name;
-  final String email;
-  final String phoneNumber;
-
-  final String country;
-  final String state;
-  final String district;
-  final String block;
-  final String gpWard;
-  final String villageAddress;
+   String id;
+   String name;
+   String email;
+   String phoneNumber;
+   String whatsappNumber;
+   String country;
+   String state;
+   String district;
+   String block;
+   String gpWard;
+   String villageAddress;
 
   UserProfile({
     required this.id,
     required this.name,
     required this.email,
     required this.phoneNumber,
+    required this.whatsappNumber,
     required this.country,
     required this.state,
     required this.district,
@@ -28,8 +29,9 @@ class UserProfile {
     return UserProfile(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
-      email: json['mailId'] ?? '',
+      email: json['email'] ?? '',
       phoneNumber: json['phoneNumber'] ?? '',
+      whatsappNumber: json['whatsappNumber']?? '',
       country: json['country'] ?? '',
       state: json['state'] ?? '',
       district: json['district'] ?? '',
@@ -43,8 +45,9 @@ class UserProfile {
     return {
       'id': id,
       'name': name,
-      'mailId': email,
+      'email': email,
       'phoneNumber': phoneNumber,
+      'whatsappNumber':whatsappNumber,
       'country': country,
       'state': state,
       'district': district,
@@ -57,8 +60,9 @@ class UserProfile {
   UserProfile copyWith({
     String? id,
     String? name,
-    String? mailId,
+    String? email,
     String? phoneNumber,
+    String? whatsappNumber,
     String? country,
     String? state,
     String? district,
@@ -69,8 +73,9 @@ class UserProfile {
     return UserProfile(
       id: id ?? this.id,
       name: name ?? this.name,
-      email: mailId ?? this.email,
+      email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      whatsappNumber: whatsappNumber ?? this.whatsappNumber,
       country: country ?? this.country,
       state: state ?? this.state,
       district: district ?? this.district,

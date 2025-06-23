@@ -13,10 +13,6 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../common/widgets/youtube_player_widget.dart';
 import '../controller/location_controller.dart';
 
-
-
-
-
 class NewsDetailScreen extends StatefulWidget {
   final String newsId;
   const NewsDetailScreen({super.key, required this.newsId});
@@ -31,7 +27,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   final NewsController newsController = Get.put(NewsController());
   final LocationController locationController = Get.put(LocationController());
 
-  final PageController _pageController = PageController(viewportFraction: 1, keepPage: true);
+  final PageController _pageController =
+      PageController(viewportFraction: 1, keepPage: true);
   int _currentPage = 0;
 
   @override
@@ -39,7 +36,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       newsController.getNewsById(widget.newsId);
-      locationController.geohashFromLocationData(newsController.currentNews.value?.locationDetails);
+      locationController.geohashFromLocationData(
+          newsController.currentNews.value?.locationDetails);
     });
 
     _pageController.addListener(() {
@@ -51,44 +49,50 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackground,
       appBar: AppBar(
         backgroundColor: AppColors.primary.withOpacity(0.9),
-        title: Image.asset("assets/logo/logo_header.png",height: 30,),
+        title: Image.asset(
+          "assets/logo/logo_header.png",
+          height: 30,
+        ),
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded,size: 22,),
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              size: 22,
+            ),
             color: Colors.white60,
             onPressed: () {
-               Get.back();
-               Get.find<NewsController>().getAllNews();
-            }
-        ),
+              Get.back();
+              Get.find<NewsController>().getAllNews();
+            }),
         actions: [
           IconButton(
               icon: const Icon(
-                  Icons.share,
-                  size: 22,
+                Icons.share,
+                size: 22,
               ),
               color: Colors.white60,
               onPressed: () {
                 newsController.shareCurrentNews();
                 newsController.incrementShares();
-              }
-          ),
+              }),
           Obx(() => IconButton(
-            onPressed: () {
-              bookmarkController.toggleBookmark(widget.newsId);
-            },
-            icon: Icon(
-              bookmarkController.isBookmarked(widget.newsId)
-                  ? Icons.bookmark_added_rounded
-                  : Icons.bookmark_border_rounded,
-              size: 22,
-              color:Colors.white60,
-            ),
-          )),
+                onPressed: () {
+                  bookmarkController.toggleBookmark(widget.newsId);
+                },
+                icon: Icon(
+                  bookmarkController.isBookmarked(widget.newsId)
+                      ? Icons.bookmark_added_rounded
+                      : Icons.bookmark_border_rounded,
+                  size: 22,
+                  color: Colors.white60,
+                ),
+              )),
         ],
       ),
       body: Obx(() {
@@ -120,12 +124,14 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                           return Image.network(
                             imageUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+                            errorBuilder: (_, __, ___) =>
+                                const Center(child: Icon(Icons.broken_image)),
                           );
                         } else {
-                          final videoUrl = news.videoUrls[index - news.imageUrls.length];
+                          final videoUrl =
+                              news.videoUrls[index - news.imageUrls.length];
                           return AspectRatio(
-                              aspectRatio: 16/9,
+                              aspectRatio: 16 / 9,
                               child: SimpleYoutubePlayer(videoUrl: videoUrl));
                         }
                       },
@@ -137,10 +143,13 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       // top: 20,
                       // bottom: 0,
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios, color: Colors.white70),
+                        icon: const Icon(Icons.arrow_back_ios,
+                            color: Colors.white70),
                         onPressed: () {
                           if (_currentPage > 0) {
-                            _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                            _pageController.previousPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut);
                           }
                         },
                       ),
@@ -152,10 +161,16 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       // top: 0,
                       // bottom: 0,
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios, color: Colors.white70),
+                        icon: const Icon(Icons.arrow_forward_ios,
+                            color: Colors.white70),
                         onPressed: () {
-                          if (_currentPage < news.imageUrls.length + news.videoUrls.length - 1) {
-                            _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                          if (_currentPage <
+                              news.imageUrls.length +
+                                  news.videoUrls.length -
+                                  1) {
+                            _pageController.nextPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut);
                           }
                         },
                       ),
@@ -163,7 +178,6 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   ],
                 ),
               ),
-
 
               const SizedBox(height: 12),
 
@@ -173,13 +187,19 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                 child: Row(
                   children: [
                     Chip(
-                      label: Text(categoryController.getCategoryName(news.categoryId ?? ''),style: const TextStyle(color: AppColors.primary),),
+                      label: Text(
+                        categoryController
+                            .getCategoryName(news.categoryId ?? ''),
+                        style: const TextStyle(color: AppColors.primary),
+                      ),
                       backgroundColor: AppColors.secondary.withAlpha(100),
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      DateFormat.yMMMMEEEEd().add_jm().format(news.timestamp ?? DateTime.now()),
-                      style: const TextStyle(color:AppColors.textMuted),
+                      DateFormat.yMMMMEEEEd()
+                          .add_jm()
+                          .format(news.timestamp ?? DateTime.now()),
+                      style: const TextStyle(color: AppColors.textMuted),
                     ),
                   ],
                 ),
@@ -191,7 +211,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   padding: const EdgeInsets.only(left: 16, top: 4),
                   child: Row(
                     children: [
-                      const Icon(Icons.location_on, size: 16, color: Colors.redAccent),
+                      const Icon(Icons.location_on,
+                          size: 16, color: Colors.redAccent),
                       const SizedBox(width: 4),
                       Text(
                         "${news.locationDetails?.block}, ${news.locationDetails?.district}, ${news.locationDetails?.state}",
@@ -208,7 +229,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   padding: EdgeInsets.only(left: 16, top: 4),
                   child: Row(
                     children: [
-                      Icon(Icons.location_on, size: 16, color: Colors.redAccent),
+                      Icon(Icons.location_on,
+                          size: 16, color: Colors.redAccent),
                       SizedBox(width: 4),
                       Text(
                         "Location not available",
@@ -228,26 +250,31 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                 child: Text(
                   news.title,
                   style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
               const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 12),
-                color: AppColors.accent.withOpacity(0.1),
-                child: Text(
-                  news.subHeading!,
-                  style: const TextStyle(
-                      fontSize: 18,
-                      color: AppColors.textSecondary,
-                      fontStyle:FontStyle.italic
 
-                  ),
-                ),
-              ),
+              //subheading
+              news.subHeading!.isEmpty
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      color: AppColors.accent.withOpacity(0.1),
+                      child: Text(
+                        news.subHeading!,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: AppColors.textSecondary,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    )
+                  : Container(height: 0,),
+
               const SizedBox(height: 12),
 
               // Author
@@ -256,13 +283,15 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                 child: Row(
                   children: [
                     const CircleAvatar(
-                      backgroundImage: AssetImage("assets/logo/gram_sanjog_app_icon.png"),
+                      backgroundImage:
+                          AssetImage("assets/logo/gram_sanjog_app_icon.png"),
                       radius: 16,
                     ),
                     const SizedBox(width: 8),
                     Text(news.createdBy ?? 'Admin'),
                     const Spacer(),
-                    Text(calculateReadingTime(news.description), style: TextStyle(color: Colors.grey.shade600)),
+                    Text(calculateReadingTime(news.description),
+                        style: TextStyle(color: Colors.grey.shade600)),
                   ],
                 ),
               ),
@@ -281,34 +310,35 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
               const SizedBox(height: 24),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Obx(() {
-                  final news = newsController.currentNews.value;
-                  final isLiked = newsController.hasUserLiked(news!.newsId);
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Obx(() {
+                    final news = newsController.currentNews.value;
+                    final isLiked = newsController.hasUserLiked(news!.newsId);
 
-                  return Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => newsController.toggleLike(news.newsId),
-                        child: Row(
-                          children: [
-                            Icon(
-                              isLiked ? Icons.favorite : Icons.favorite_border,
-                              color: isLiked ? Colors.red : Colors.grey,
-                            ),
-                            const SizedBox(width: 6),
-                            Text('${news.likes ?? 0} Likes'),
-                          ],
+                    return Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => newsController.toggleLike(news.newsId),
+                          child: Row(
+                            children: [
+                              Icon(
+                                isLiked
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: isLiked ? Colors.red : Colors.grey,
+                              ),
+                              const SizedBox(width: 6),
+                              Text('${news.likes ?? 0} Likes'),
+                            ],
+                          ),
                         ),
-                      ),
-                      // const SizedBox(width: 20),
-                      // const Icon(Icons.remove_red_eye, color: Colors.grey),
-                      // const SizedBox(width: 6),
-                      // Text('${news.views ?? 0} Views'),
-                    ],
-                  );
-                })
-              ),
+                        // const SizedBox(width: 20),
+                        // const Icon(Icons.remove_red_eye, color: Colors.grey),
+                        // const SizedBox(width: 6),
+                        // Text('${news.views ?? 0} Views'),
+                      ],
+                    );
+                  })),
 
               const SizedBox(height: 24),
             ],
@@ -318,9 +348,6 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
     );
   }
 }
-
-
-
 
 String calculateReadingTime(String text) {
   const wordsPerMinute = 200;

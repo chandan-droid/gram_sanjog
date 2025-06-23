@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../common/theme/theme.dart';
 import '../common/widgets/compact_news_card.dart';
 import '../controller/bookmark_controller.dart';
 import '../controller/category_controller.dart';
@@ -17,8 +18,12 @@ class BookmarkScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Center(child: Text("Saved Contents")),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+
       ),
       body: Obx((){
 
@@ -29,7 +34,7 @@ class BookmarkScreen extends StatelessWidget{
         if (bookmarkedNews.isEmpty) {
           return const Padding(
             padding: EdgeInsets.all(20),
-            child: Center(child: Text("No Saved News Available")),
+            child: Center(child: Text("No Saved Content Available")),
           );
         }
         return ListView.builder(

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gram_sanjog/common/constants.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
+import 'package:gram_sanjog/controller/auth/user_controller.dart';
 import 'package:gram_sanjog/controller/news_controller.dart';
 import 'package:gram_sanjog/model/news_model.dart';
+import 'package:gram_sanjog/view/home_page_view.dart';
 import 'package:intl/intl.dart';
 
 class AddNewsPage extends StatefulWidget {
@@ -16,12 +18,12 @@ class AddNewsPage extends StatefulWidget {
 
 class _AddNewsPageState extends State<AddNewsPage> {
   final NewsController newsController = Get.put(NewsController());
+  final UserController userController = Get.find<UserController>();
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final subHeadingController = TextEditingController();
   final descriptionController = TextEditingController();
   final categoryController = TextEditingController();
-  final adminController = TextEditingController();
 
   List<TextEditingController> imageUrlControllers = [TextEditingController()];
   List<TextEditingController> videoUrlControllers = [TextEditingController()];
@@ -66,7 +68,10 @@ class _AddNewsPageState extends State<AddNewsPage> {
       backgroundColor: AppColors.inputBackground,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
-        title: const Text("Add News",style: TextStyle(color: AppColors.inputBackground),),
+        title: const Text("Add Content",style: TextStyle(color: AppColors.inputBackground),),
+        iconTheme: IconThemeData(
+          color: AppColors.inputBackground,
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -144,8 +149,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
                 validator: (val) => val == null || val.isEmpty ? "Select a category" : null,
               ),
 
-              const SizedBox(height: 10),
-              _buildField("Admin name", adminController, true),
+
 
               const SizedBox(height: 20),
               SizedBox(
@@ -171,36 +175,17 @@ class _AddNewsPageState extends State<AddNewsPage> {
                         location: null,
                         locationDetails: location,
                         categoryId: categoryController.text,
-                        createdBy: adminController.text,
+                        createdBy: userController.userData.value!.name,
                         verifiedBy: null,
                         status: "pending",
                         likes: 0,
                         views: 0,
                         shares: 0,
                       );
+
                       if (kDebugMode) {
-                        print('Title: ${titleController.text}');
-                        print('Subheading: ${subHeadingController.text}');
-                        print('Description: ${descriptionController.text}');
-                        print('Category: ${categoryController.text}');
-                        print('Admin: ${adminController.text}');
-
-                        // Print image URLs
-                        for (int i = 0; i < imageUrlControllers.length; i++) {
-                          print('Image URL ${i + 1}: ${imageUrlControllers[i].text}');
-                        }
-
-                        // Print video URLs
-                        for (int i = 0; i < videoUrlControllers.length; i++) {
-                          print('Video URL ${i + 1}: ${videoUrlControllers[i].text}');
-                        }
-
-                        // Print location fields
-                        locationControllers.forEach((key, controller) {
-                          print('$key: ${controller.text}');
-                        });
+                        print(news.toJson());
                       }
-                      print(news.toJson());
                       newsController.postNews(news);
                     }
                   },

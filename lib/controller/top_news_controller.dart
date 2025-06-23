@@ -26,7 +26,7 @@ class TopNewsController extends GetxController {
         print('[TopNews] Total news fetched: ${allNews.length}');
       }
 
-      final topNews = allNews.where((news) => (news.views ?? 0) > 1000).toList();
+      final topNews = allNews.where((news) => (news.views ?? 0) > 1000 && news.status == 'verified').toList();
 
       topNewsList.assignAll(topNews);
 
