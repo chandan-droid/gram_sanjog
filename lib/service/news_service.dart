@@ -51,6 +51,15 @@ class NewsService {
     }
   }
 
+  //delete news by id
+  Future<void> deleteNews(String newsId) async {
+    await newsCollectionRef.doc(newsId).delete();
+  }
+
+  //update news
+  Future<void> updateNews(News news) async {
+    await newsCollectionRef.doc(news.newsId).update(news.toJson());
+  }
 
   // Get single news by ID
   Future<News?> getNewsById(String id) async {
@@ -64,6 +73,7 @@ class NewsService {
       return null;
     }
   }
+
 
   Future<void> incrementLikes(String newsId) async {
     await newsCollectionRef.doc(newsId).update({'likes': FieldValue.increment(1)});

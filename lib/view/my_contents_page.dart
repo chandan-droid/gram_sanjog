@@ -8,6 +8,7 @@ import 'package:gram_sanjog/controller/news_controller.dart';
 import 'package:gram_sanjog/view/add_news_screen.dart';
 
 import '../common/theme/theme.dart';
+import '../common/widgets/my_contents_news_card.dart';
 import '../controller/auth/auth_controller.dart';
 
 class MyContentsPage extends StatefulWidget {
@@ -92,13 +93,22 @@ class _MyContentsPageState extends State<MyContentsPage> {
                   itemCount: myNewsList.length,
                   itemBuilder: (context, index) {
                     final news = myNewsList[index];
-                    return NewsCardCompact(
+                    return MyContentsNewsCard(
                       newsId: news.newsId,
                       imageUrl:news.imageUrls[0],
                       title: news.title,
                       subHeading: news.subHeading ?? '',
                       upvotes: news.likes ?? 0,
                       shares: news.shares ?? 0,
+                      status: news.status ?? 'pending',
+                      timestamp: news.timestamp,
+                      onEdit: (){
+                        Get.to(AddNewsPage(existingNews: news,));
+                      },
+                      onDelete: (){
+                        newsController.deleteNews(news.newsId);
+                        //newsController.update();
+                      }
                     );
                   },
                 );

@@ -6,6 +6,8 @@ import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/view/auth/log_in_screen.dart';
 import 'package:gram_sanjog/view/my_contents_page.dart';
 
+import '../common/widgets/collapsible_tile.dart';
+
 class UserProfilePage extends StatelessWidget {
   final UserController userController = Get.find<UserController>();
   final AuthController authController = Get.find<AuthController>();
@@ -32,10 +34,21 @@ class UserProfilePage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           children: [
             Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.grey.withOpacity(0.5),
-                backgroundImage: AssetImage("assets/illustrations/user.png"),
+              child: Container(
+                padding: EdgeInsets.all(3),
+
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.highlight,
+                    width: 3,
+                  ),
+                ),
+                child:const CircleAvatar(
+                  radius: 30,
+                  backgroundImage:AssetImage("assets/illustrations/user.png"),
+                  backgroundColor: Colors.white,
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -46,12 +59,14 @@ class UserProfilePage extends StatelessWidget {
                     const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
             ),
-            Chip(
-              label: Text(
+            const SizedBox(height: 10),
+
+            Center(
+              child: Text(
                 user.email,
-                style: const TextStyle(color: AppColors.primary),
+                style:
+                const TextStyle(fontSize: 20,),
               ),
-              backgroundColor: AppColors.secondary.withAlpha(100),
             ),
             const SizedBox(height: 30),
             ListTile(
@@ -67,14 +82,27 @@ class UserProfilePage extends StatelessWidget {
               },
             ),
             const SizedBox(height: 30),
-            _buildInfoTile("Phone", user.phoneNumber),
-            _buildInfoTile("WhatsApp", user.whatsappNumber),
-            _buildInfoTile("Country", user.country),
-            _buildInfoTile("State", user.state),
-            _buildInfoTile("District", user.district),
-            _buildInfoTile("Block", user.block),
-            _buildInfoTile("GP/Ward", user.gpWard),
-            _buildInfoTile("Village/Address", user.villageAddress),
+            CollapsibleProfileSection(
+              title: 'Personal Information',
+              content: [
+                _buildInfoTile("Name", user.name),
+                _buildInfoTile("Email", user.email),
+                _buildInfoTile("Phone", user.phoneNumber),
+                _buildInfoTile("WhatsApp", user.whatsappNumber),
+              ],
+            ),
+            const SizedBox(height: 16),
+           CollapsibleProfileSection(
+            title: 'Location',
+            content: [
+              _buildInfoTile("Country", user.country),
+              _buildInfoTile("State", user.state),
+              _buildInfoTile("District", user.district),
+              _buildInfoTile("Block", user.block),
+              _buildInfoTile("GP/Ward", user.gpWard),
+              _buildInfoTile("Village/Address", user.villageAddress),
+            ],
+           ),
             const SizedBox(height: 30),
             TextButton.icon(
               onPressed: () {
@@ -99,8 +127,8 @@ class UserProfilePage extends StatelessWidget {
   Widget _buildInfoTile(String label, String value) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      title: Text(label),
-      subtitle: Text(value.isNotEmpty ? value : "Not Provided"),
+      title: Text(label,style: const TextStyle(color: Colors.black),),
+      subtitle: Text(value.isNotEmpty ? value : "Not Provided",style: const TextStyle(color: Colors.grey)),
       //trailing: const Icon(Icons.edit),
     );
   }

@@ -96,6 +96,20 @@ class NewsController extends GetxController{
     }
   }
 
+  Future<void> updateNews(News news) async {
+    try {
+      await newsService.updateNews(news);
+      myNewsList.removeWhere((n) => n.newsId == news.newsId);
+      myNewsList.add(news);
+      //currentNews.value = news;
+      Get.back();
+    }catch(e){
+      if (kDebugMode) {
+        print("Error updating news: $e");
+      }
+    }
+  }
+
   Future<void> shareCurrentNews()async{
     try{
       final response = await http.get(Uri.parse(currentNews.value!.imageUrls.first));
@@ -120,6 +134,16 @@ class NewsController extends GetxController{
           files: [XFile(file.path)],
         ),
       );
+    }catch(e){
+
+    }
+  }
+
+  Future<void> deleteNews(String newsId) async {
+    try {
+      await newsService.deleteNews(newsId);
+      newsList.removeWhere((news)=>news.newsId == newsId);
+      myNewsList.removeWhere((news)=>news.newsId == newsId);
     }catch(e){
 
     }

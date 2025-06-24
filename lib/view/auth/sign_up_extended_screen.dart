@@ -6,7 +6,6 @@ import 'package:gram_sanjog/controller/auth/auth_controller.dart';
 import '../../common/theme/theme.dart';
 
 class SignUpPageExtended extends StatelessWidget {
-
   final _formKey = GlobalKey<FormState>();
   final AuthController authController = Get.find<AuthController>();
 
@@ -26,7 +25,8 @@ class SignUpPageExtended extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text("Additional Details", style: TextStyle(color: Colors.white)),
+        title: const Text("Additional Details",
+            style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
@@ -35,15 +35,46 @@ class SignUpPageExtended extends StatelessWidget {
           key: _formKey,
           child: Column(
             children: [
-
-              _buildTextField("WhatsApp Number", whatsappController,
-                  keyboardType: TextInputType.phone),
-              _buildTextField("Country*", countryController),
-              _buildTextField("State*", stateController),
-              _buildTextField("District*", districtController),
-              _buildTextField("Block*", blockController),
-              _buildTextField("GP/Ward*", gpController),
-              _buildTextField("Village/Address*", villageController),
+              _buildTextField("WhatsApp Number*", whatsappController,
+                  keyboardType: TextInputType.phone, validator: (value) {
+                if (value == null || value.trim().isEmpty)
+                  return "WhatsApp number is required";
+                if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                  return "Enter a valid 10-digit number";
+                }
+                return null;
+              }),
+              _buildTextField("Country*", countryController,
+                  validator: (value) {
+                if (value == null || value.trim().isEmpty)
+                  return 'Please enter Country';
+                return null;
+              }),
+              _buildTextField("State*", stateController,
+                  validator: (value) {
+                if (value == null || value.trim().isEmpty)
+                  return 'Please enter State';
+                return null;
+              }),
+              _buildTextField("District*", districtController,
+                  validator: (value) {
+                if (value == null || value.trim().isEmpty)
+                  return 'Please enter District';
+                return null;
+              }),
+              _buildTextField("Block*", blockController,
+                  validator: (value) {
+                if (value == null || value.trim().isEmpty)
+                  return 'Please enter Block';
+                return null;
+              }),
+              _buildTextField("GP/Ward*", gpController,
+                  validator: (value) {
+                if (value == null || value.trim().isEmpty)
+                  return 'Please enter GP';
+                return null;
+              }),
+              _buildTextField("Village/Address", villageController),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -70,8 +101,8 @@ class SignUpPageExtended extends StatelessWidget {
                       authController.signup(authController.signupData);
                     }
                   },
-                  child: const Text(
-                      "Register", style: TextStyle(color: Colors.white)),
+                  child: const Text("Register",
+                      style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -80,14 +111,13 @@ class SignUpPageExtended extends StatelessWidget {
       ),
     );
   }
-
 }
 
 Widget _buildTextField(String label, TextEditingController controller,
     {IconData? prefixIcon,
-      bool obscure = false,
-      TextInputType keyboardType = TextInputType.text,
-      String? Function(String?)? validator}) {
+    bool obscure = false,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 12),
     child: TextFormField(

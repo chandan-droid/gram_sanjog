@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:gram_sanjog/common/theme/theme.dart';
+
+import '../../view/user_profile_page.dart';
 
 class CustomDrawerHeader extends StatelessWidget {
   final String name;
@@ -24,11 +29,23 @@ class CustomDrawerHeader extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundImage: AssetImage(profileImage),
-            backgroundColor: Colors.white,
+          Container(
+            padding: EdgeInsets.all(3),
+
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.highlight,
+                width: 3,
+              ),
+            ),
+            child:CircleAvatar(
+              radius: 22,
+              backgroundImage: AssetImage(profileImage),
+              backgroundColor: Colors.white,
+            ),
           ),
+
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -54,7 +71,13 @@ class CustomDrawerHeader extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
+          const SizedBox(width: 16),
+          IconButton(
+              onPressed: (){
+                Get.to(UserProfilePage());
+              },
+              icon: Icon(Icons.arrow_forward_ios_rounded))
         ],
       ),
     );

@@ -68,37 +68,32 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.zero,
                   children: [
                     if (authController.isLoggedIn)
-                      Obx(() => GestureDetector(
-                        onTap: (){
-                          Get.to(UserProfilePage());
-                        },
-                        child: CustomDrawerHeader(
-                              name: userController.userData.value?.name ?? '',
-                              email:
-                                  authController.firebaseUser.value?.email ?? '',
-                              profileImage: "assets/illustrations/user.png",
-                            ),
-                      )),
+                      Obx(() => CustomDrawerHeader(
+                            name: userController.userData.value?.name ?? '',
+                            email:
+                                authController.firebaseUser.value?.email ?? '',
+                            profileImage: "assets/illustrations/user.png",
+                          )),
                     ListTile(
                       leading:
-                          const Icon(Icons.home_rounded, color: Colors.white60),
-                      title: const Text(
-                        'Home',
-                        style: TextStyle(color: Colors.white60),
-                      ),
-                      onTap: () {
-                        Get.offAll(const HomePage());
-                      },
-                    ),
-                    ListTile(
-                      leading:
-                          const Icon(Icons.bookmark, color: Colors.white60),
+                          const Icon(Icons.bookmark_border_rounded, color: Colors.white60),
                       title: const Text(
                         'Saved Contents',
                         style: TextStyle(color: Colors.white60),
                       ),
                       onTap: () {
                         Get.to(() => BookmarkScreen());
+                      },
+                    ),
+                    ListTile(
+                      leading:
+                      const Icon(Icons.info_outline_rounded, color: Colors.white60),
+                      title: const Text(
+                        'About Us',
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                      onTap: () {
+                        //Get.to(() => AboutUsPage());
                       },
                     ),
                     if (authController.isLoggedIn)
@@ -337,3 +332,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+
