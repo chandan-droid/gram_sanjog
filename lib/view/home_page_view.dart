@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   LocationController locationController = Get.put(LocationController());
   TopNewsController topNewsController = Get.put(TopNewsController());
   AuthController authController = Get.find<AuthController>();
-  UserController userController = Get.put(UserController());
+  UserController userController = Get.find<UserController>();
 
   @override
   void initState() {

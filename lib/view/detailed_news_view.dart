@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
+import 'package:gram_sanjog/controller/auth/user_controller.dart';
 import 'package:gram_sanjog/controller/bookmark_controller.dart';
 import 'package:gram_sanjog/controller/category_controller.dart';
 import 'package:gram_sanjog/controller/news_controller.dart';
@@ -26,6 +29,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   final CategoryController categoryController = Get.put(CategoryController());
   final NewsController newsController = Get.put(NewsController());
   final LocationController locationController = Get.put(LocationController());
+  final UserController userController = Get.find<UserController>();
 
   final PageController _pageController =
       PageController(viewportFraction: 1, keepPage: true);
@@ -34,11 +38,15 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       newsController.getNewsById(widget.newsId);
       locationController.geohashFromLocationData(
           newsController.currentNews.value?.locationDetails);
     });
+    if (kDebugMode) {
+      print(userController.newsAuthor.value);
+    }
 
     _pageController.addListener(() {
       final page = _pageController.page?.round() ?? 0;
@@ -48,6 +56,15 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
         });
       }
     });
+
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    userController.newsAuthor.value = null;
+    if (kDebugMode) {
+      print(userController.newsAuthor.value);
+    }
   }
 
   @override
@@ -69,6 +86,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
             onPressed: () {
               Get.back();
               Get.find<NewsController>().getAllNews();
+              userController.newsAuthor.value = null;
             }),
         actions: [
           IconButton(
@@ -97,6 +115,12 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
       ),
       body: Obx(() {
         final news = newsController.currentNews.value;
+        // final author = userController.newsAuthor.value;
+        //
+        // if (news != null && author?.id != news.createdBy) {
+        //   userController.fetchAuthor(news.createdBy ?? "");
+        //   return const SizedBox();
+        // }
 
         if (newsController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -288,7 +312,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       radius: 16,
                     ),
                     const SizedBox(width: 8),
-                    Text(news.createdBy ?? 'Admin'),
+                    Text( newsController.newsAuthor.value?.name ?? 'Unknown user'),
                     const Spacer(),
                     Text(calculateReadingTime(news.description),
                         style: TextStyle(color: Colors.grey.shade600)),

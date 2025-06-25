@@ -10,6 +10,7 @@ import 'package:gram_sanjog/view/bookmark_view.dart';
 import 'package:gram_sanjog/view/home_page_view.dart';
 import 'bindings/home_bindings.dart';
 import 'common/theme/theme.dart';
+import 'controller/auth/user_controller.dart';
 import 'controller/bookmark_controller.dart';
 import 'controller/top_news_controller.dart';
 import 'firebase_options.dart';
@@ -26,6 +27,8 @@ void main() async{
   Get.lazyPut(() => NewsController());
   Get.put(SearchController());
   Get.put(AuthController());
+  Get.put(UserController());
+
   runApp(const MyApp());
 }
 

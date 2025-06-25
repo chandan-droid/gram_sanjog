@@ -32,9 +32,9 @@ class _MyContentsPageState extends State<MyContentsPage> {
 
     // Ensure user data is fetched
     userController.fetchUser(currentUserId!).then((_) {
-      final name = userController.userData.value?.name;
-      if (name != null && name.isNotEmpty) {
-        newsController.getMyNews(name);
+      final id = userController.userData.value?.id;
+      if (id != null && id.isNotEmpty) {
+        newsController.getMyNews(id);
       }
     });
   }

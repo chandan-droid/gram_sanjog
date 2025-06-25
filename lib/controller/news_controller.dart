@@ -12,6 +12,7 @@ import '../model/news_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../model/user_model.dart';
 import '../view/home_page_view.dart';
 
 
@@ -25,6 +26,9 @@ class NewsController extends GetxController{
   var isLoading = true.obs;
   RxString errorMessage = ''.obs;
   RxSet<String> likedNewsIds = <String>{}.obs;
+
+  final Rxn<UserProfile> newsAuthor = Rxn<UserProfile>();  // Author of selected news
+
 
 
 
@@ -56,11 +60,11 @@ class NewsController extends GetxController{
     }
   }
 
-  Future<void> getMyNews(String name) async {
+  Future<void> getMyNews(String userId) async {
     try {
       isLoading.value = true;
       final newsData = await newsService.getAllNews();
-      final myNews = newsData.where((news) => news.createdBy == name).toList();
+      final myNews = newsData.where((news) => news.createdBy == userId).toList();
       myNewsList.assignAll(myNews);
     } catch (e) {
       errorMessage.value = "Failed to load your news";
@@ -70,11 +74,18 @@ class NewsController extends GetxController{
   }
 
 
-  Future<void> getNewsById(String Id) async{
+  Future<void> getNewsById(String newsId) async{
     try{
       isLoading.value = true;
-      final news = await newsService.getNewsById(Id);
+      final news = await newsService.getNewsById(newsId);
       currentNews.value = news;
+
+      //preload the author name here before show news page
+      final authorDoc = await FirebaseFirestore.instance.collection('user').doc(news?.createdBy).get();
+      if (authorDoc.exists) {
+        newsAuthor.value = UserProfile.fromJson(authorDoc.data()!);
+      }
+      isLoading.value = false;
     }catch(e){
       errorMessage = 'Failed to load the news.' as RxString;
       return;

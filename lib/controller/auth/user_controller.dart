@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 class UserController extends GetxController {
   var userData = Rxn<UserProfile>();
+  final Rxn<UserProfile> newsAuthor = Rxn<UserProfile>();  // Author of selected news
 
   Future<void> fetchUser(String uid) async {
     try {
@@ -25,7 +26,12 @@ class UserController extends GetxController {
       }
     }
   }
-
+  Future<void> fetchAuthor(String uid) async {
+    final userDoc = await FirebaseFirestore.instance.collection('user').doc(uid).get();
+    if (userDoc.exists) {
+      newsAuthor.value = UserProfile.fromJson(userDoc.data()!);
+    }
+  }
   void clearUser() {
     userData.value = null;
   }

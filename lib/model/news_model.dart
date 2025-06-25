@@ -13,7 +13,7 @@ class News {
   final String? categoryId;
   final String? createdBy;
   final String? updatedBy;
-  final String? updatedAt;
+  final DateTime? updatedAt;
   final String? verifiedBy;
   final String? status;
    int? likes;
@@ -53,6 +53,9 @@ class News {
       description: json['description'] as String? ?? '',
       categoryId: json['categoryId'] as String? ?? '',
       createdBy: json['createdBy'] as String? ?? '',
+      updatedBy: json['updatedBy'] as String? ?? '',
+      updatedAt: (json['updatedAt'] as Timestamp?)?.toDate(),
+      verifiedBy: json['verifiedBy'] as String? ?? '',
       imageUrls: (json['imageUrls'] as List<dynamic>?)
           ?.map((e) => e.toString())
           .toList() ??
@@ -88,7 +91,7 @@ class News {
     'categoryId': categoryId,
     'createdBy': createdBy,
     'updatedBy': updatedBy,
-    'updatedAt': updatedAt,
+    'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
     'verifiedBy': verifiedBy,
     'status': status,
     'likes': likes,
@@ -109,7 +112,7 @@ class News {
     String? categoryId,
     String? createdBy,
     String? updatedBy,
-    String? updatedAt,
+    DateTime? updatedAt,
     String? verifiedBy,
     String? status,
     int? likes,

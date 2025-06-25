@@ -329,7 +329,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
       imageUrlControllers = news.imageUrls.map((url) => TextEditingController(text: url)).toList();
       videoUrlControllers = news.videoUrls.map((url) => TextEditingController(text: url)).toList();
       selectedCategory = news.categoryId!;
-      categoryController.text = news.categoryId!;
+      categoryController.text = selectedCategory;
 
       locationControllers['country*']!.text = news.locationDetails?.country ?? '';
       locationControllers['state*']!.text = news.locationDetails?.state ?? '';
@@ -454,8 +454,10 @@ class _AddNewsPageState extends State<AddNewsPage> {
                         timestamp: widget.existingNews?.timestamp ?? DateTime.now(),
                         locationDetails: location,
                         categoryId: categoryController.text,
-                        createdBy: userController.userData.value!.name,
+                        createdBy: userController.userData.value?.id ?? "Unknown User",
                         verifiedBy: widget.existingNews?.verifiedBy,
+                        updatedBy: userController.userData.value?.id,
+                        updatedAt: DateTime.now(),
                         status: "pending",
                         likes: widget.existingNews?.likes ?? 0,
                         views: widget.existingNews?.views ?? 0,
