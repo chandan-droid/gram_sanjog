@@ -44,7 +44,7 @@ class AuthService {
   }
 
   // Stream to track auth state
-  Stream<User?> get userChanges => auth.authStateChanges();
+  Stream<User?> get userChanges => auth.authStat  eChanges();
 
   // Get current user
   User? get currentUser => auth.currentUser;

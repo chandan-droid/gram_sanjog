@@ -10,6 +10,10 @@ class UserProfile {
    String block;
    String gpWard;
    String villageAddress;
+   String? identification;
+   String? educationQualification;
+   String? certification;
+   List<Map<String, dynamic>>? socialLinks;
 
   UserProfile({
     required this.id,
@@ -23,6 +27,10 @@ class UserProfile {
     required this.block,
     required this.gpWard,
     required this.villageAddress,
+     this.identification,
+     this.educationQualification,
+     this.certification,
+     this.socialLinks,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -38,6 +46,10 @@ class UserProfile {
       block: json['block'] ?? '',
       gpWard: json['gpWard'] ?? '',
       villageAddress: json['villageAddress'] ?? '',
+      identification: json['identification'] ?? '',
+      educationQualification: json['educationQualification'] ?? '',
+      certification: json['certification'] ?? '',
+      socialLinks: List<Map<String, dynamic>>.from(json['socialLinks'] ?? []),
     );
   }
 
@@ -54,6 +66,10 @@ class UserProfile {
       'block': block,
       'gpWard': gpWard,
       'villageAddress': villageAddress,
+      'identification': identification,
+      'educationQualification': educationQualification,
+      'certification': certification,
+      'socialLinks': socialLinks,
     };
   }
 
@@ -69,6 +85,10 @@ class UserProfile {
     String? block,
     String? gpWard,
     String? villageAddress,
+    String? identification,
+    String? educationQualification,
+    String? certification,
+    List<Map<String, dynamic>>? socialLinks,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -82,6 +102,10 @@ class UserProfile {
       block: block ?? this.block,
       gpWard: gpWard ?? this.gpWard,
       villageAddress: villageAddress ?? this.villageAddress,
+      identification: identification ?? this.identification,
+      educationQualification: educationQualification ?? this.educationQualification,
+      certification: certification ?? this.certification,
+      socialLinks: socialLinks ?? this.socialLinks,
     );
   }
 }

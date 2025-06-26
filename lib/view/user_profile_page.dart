@@ -7,12 +7,29 @@ import 'package:gram_sanjog/view/auth/log_in_screen.dart';
 import 'package:gram_sanjog/view/my_contents_page.dart';
 
 import '../common/widgets/collapsible_tile.dart';
+import '../common/widgets/editable_profile_field.dart';
+import '../model/user_model.dart';
 
-class UserProfilePage extends StatelessWidget {
+class UserProfilePage extends StatefulWidget {
+
+  UserProfilePage({super.key});
+
+  @override
+  State<UserProfilePage> createState() => _UserProfilePageState();
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
   final UserController userController = Get.find<UserController>();
   final AuthController authController = Get.find<AuthController>();
 
-  UserProfilePage({super.key});
+  late UserProfile userProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the current user data from controller
+    userProfile = Get.find<UserController>().userData.value!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,24 +102,82 @@ class UserProfilePage extends StatelessWidget {
             CollapsibleProfileSection(
               title: 'Personal Information',
               content: [
-                _buildInfoTile("Name", user.name),
-                _buildInfoTile("Email", user.email),
-                _buildInfoTile("Phone", user.phoneNumber),
-                _buildInfoTile("WhatsApp", user.whatsappNumber),
+                EditableProfileField(label: 'Name', value:user.name,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(name: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                  title: const Text('Email',style: TextStyle(color: Colors.black),),
+                  subtitle: Text(user.email.isNotEmpty ? user.email : "Not Provided",style: const TextStyle(color: Colors.grey)),
+                ),
+                EditableProfileField(label: 'Phone', value:user.phoneNumber,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(phoneNumber: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
+                EditableProfileField(label: 'WhatsApp Number', value:user.whatsappNumber,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(whatsappNumber: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
               ],
             ),
             const SizedBox(height: 16),
-           CollapsibleProfileSection(
-            title: 'Location',
-            content: [
-              _buildInfoTile("Country", user.country),
-              _buildInfoTile("State", user.state),
-              _buildInfoTile("District", user.district),
-              _buildInfoTile("Block", user.block),
-              _buildInfoTile("GP/Ward", user.gpWard),
-              _buildInfoTile("Village/Address", user.villageAddress),
-            ],
-           ),
+             CollapsibleProfileSection(
+              title: 'Location',
+              content: [
+                EditableProfileField(label: 'Country', value:user.country,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(country: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
+                EditableProfileField(label: 'State', value:user.state,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(state: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
+                EditableProfileField(label: 'District', value:user.district,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(district: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
+                EditableProfileField(label: 'Block', value:user.block,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(block: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
+                EditableProfileField(label: 'GP/Ward', value:user.gpWard,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(gpWard: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
+                EditableProfileField(label: 'Village/Address', value:user.villageAddress,
+                  onEdit: (newVal) {
+                    setState(() => userProfile = userProfile.copyWith(villageAddress: newVal));
+                    userController.updateUser(userProfile);
+                    userController.update();
+                  },
+                ),
+              ],
+             ),
             const SizedBox(height: 30),
             TextButton.icon(
               onPressed: () {
@@ -129,7 +204,13 @@ class UserProfilePage extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       title: Text(label,style: const TextStyle(color: Colors.black),),
       subtitle: Text(value.isNotEmpty ? value : "Not Provided",style: const TextStyle(color: Colors.grey)),
-      //trailing: const Icon(Icons.edit),
+      trailing: IconButton(
+        icon: const Icon(Icons.edit,color: Colors.grey,),
+        onPressed: () {
+
+        },),
+
     );
   }
 }
+

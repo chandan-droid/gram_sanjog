@@ -26,12 +26,34 @@ class UserController extends GetxController {
       }
     }
   }
+
   Future<void> fetchAuthor(String uid) async {
     final userDoc = await FirebaseFirestore.instance.collection('user').doc(uid).get();
     if (userDoc.exists) {
       newsAuthor.value = UserProfile.fromJson(userDoc.data()!);
     }
   }
+
+  Future<void> updateUser(UserProfile updatedProfile) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(updatedProfile.id)
+          .update(updatedProfile.toJson());
+
+      userData.value = updatedProfile;
+      userData.refresh();
+
+      if (kDebugMode) {
+        print("User updated successfully.");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Failed to update user: $e");
+      }
+    }
+  }
+
   void clearUser() {
     userData.value = null;
   }
