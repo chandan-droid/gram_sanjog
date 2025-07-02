@@ -64,7 +64,7 @@ class NewsController extends GetxController{
     try {
       isLoading.value = true;
       final newsData = await newsService.getAllNews();
-      final myNews = newsData.where((news) => news.createdBy == userId).toList();
+      final myNews = newsData.where((news) => news.createdById == userId).toList();
       myNewsList.assignAll(myNews);
     } catch (e) {
       errorMessage.value = "Failed to load your news";
@@ -81,10 +81,10 @@ class NewsController extends GetxController{
       currentNews.value = news;
 
       //preload the author name here before show news page
-      final authorDoc = await FirebaseFirestore.instance.collection('user').doc(news?.createdBy).get();
-      if (authorDoc.exists) {
-        newsAuthor.value = UserProfile.fromJson(authorDoc.data()!);
-      }
+      // final authorDoc = await FirebaseFirestore.instance.collection('user').doc(news?.createdBy).get();
+      // if (authorDoc.exists) {
+      //   newsAuthor.value = UserProfile.fromJson(authorDoc.data()!);
+      // }
       isLoading.value = false;
     }catch(e){
       errorMessage = 'Failed to load the news.' as RxString;

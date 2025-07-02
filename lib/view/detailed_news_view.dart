@@ -13,6 +13,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import '../common/widgets/mp4videoplayer.dart';
 import '../common/widgets/youtube_player_widget.dart';
 import '../controller/location_controller.dart';
 
@@ -56,8 +57,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
         });
       }
     });
-
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -116,7 +117,6 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
       body: Obx(() {
         final news = newsController.currentNews.value;
         // final author = userController.newsAuthor.value;
-        //
         // if (news != null && author?.id != news.createdBy) {
         //   userController.fetchAuthor(news.createdBy ?? "");
         //   return const SizedBox();
@@ -154,9 +154,15 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                         } else {
                           final videoUrl =
                               news.videoUrls[index - news.imageUrls.length];
-                          return AspectRatio(
+                          if (videoUrl.contains('youtube.com') ||
+                              videoUrl.contains('youtube')) {
+                            return AspectRatio(
                               aspectRatio: 16 / 9,
-                              child: SimpleYoutubePlayer(videoUrl: videoUrl));
+                              child: SimpleYoutubePlayer(videoUrl: videoUrl),
+                            );
+                          } else {
+                            return Mp4VideoPlayerWidget(videoUrl: videoUrl);
+                          }
                         }
                       },
                     ),
@@ -210,21 +216,53 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
+                    //category
                     Chip(
                       label: Text(
                         categoryController
                             .getCategoryName(news.categoryId ?? ''),
-                        style: const TextStyle(color: AppColors.primary),
+                        style: const TextStyle(color: AppColors.highlight),
                       ),
-                      backgroundColor: AppColors.secondary.withAlpha(100),
+                      backgroundColor: AppColors.highlight.withOpacity(0.2),
+                      shape: const StadiumBorder(
+                        side: BorderSide(
+                          color: AppColors.highlight,
+                          width: 1.0,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 8),
+
+                    //date+time
                     Text(
                       DateFormat.yMMMMEEEEd()
                           .add_jm()
                           .format(news.timestamp ?? DateTime.now()),
                       style: const TextStyle(color: AppColors.textMuted),
                     ),
+                    Spacer(),
+
+                    //like button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Obx(() {
+                        final news = newsController.currentNews.value;
+                        final isLiked = newsController.hasUserLiked(news!.newsId);
+
+                        return Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => newsController.toggleLike(news.newsId),
+                              child: Icon(
+                                isLiked ? Icons.favorite : Icons.favorite_border,
+                                color: isLiked ? AppColors.accent : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 12),
                   ],
                 ),
               ),
@@ -236,13 +274,17 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   child: Row(
                     children: [
                       const Icon(Icons.location_on,
-                          size: 16, color: Colors.redAccent),
+                          size: 16, color: AppColors.accent),
                       const SizedBox(width: 4),
-                      Text(
-                        "${news.locationDetails?.block}, ${news.locationDetails?.district}, ${news.locationDetails?.state}",
-                        style: const TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 14,
+                      SizedBox(
+                        width: 300,
+                        child: Text(
+                          "${news.locationDetails?.block}, ${news.locationDetails?.district}, ${news.locationDetails?.state}",
+                          style: const TextStyle(
+                            color: AppColors.textMuted,
+                            fontSize: 14,
+                          ),
+                          softWrap: true,
                         ),
                       ),
                     ],
@@ -254,7 +296,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                   child: Row(
                     children: [
                       Icon(Icons.location_on,
-                          size: 16, color: Colors.redAccent),
+                          size: 16, color: AppColors.accent),
                       SizedBox(width: 4),
                       Text(
                         "Location not available",
@@ -283,7 +325,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
               const SizedBox(height: 12),
 
               //subheading
-              news.subHeading!.isEmpty
+              (news.subHeading != null && news.subHeading!.isNotEmpty)
                   ? Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
@@ -297,22 +339,45 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                         ),
                       ),
                     )
-                  : Container(height: 0,),
+                  : const SizedBox(),
 
               const SizedBox(height: 12),
+
 
               // Author
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      backgroundImage:
-                          AssetImage("assets/logo/gram_sanjog_app_icon.png"),
-                      radius: 16,
+                    // const CircleAvatar(
+                    //   backgroundImage:
+                    //       AssetImage("assets/logo/gram_sanjog_app_icon.png"),
+                    //   radius: 16,
+                    // ),
+                    // const SizedBox(width: 8),
+                    RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: 'by ',
+                            style: TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                          TextSpan(
+                            text: ' ${news.createdBy ?? 'unknown'}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.highlight,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                    Text( newsController.newsAuthor.value?.name ?? 'Unknown user'),
+
+
                     const Spacer(),
                     Text(calculateReadingTime(news.description),
                         style: TextStyle(color: Colors.grey.shade600)),
@@ -331,40 +396,40 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              // const SizedBox(height: 24),
+              //
+              // Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 16),
+              //     child: Obx(() {
+              //       final news = newsController.currentNews.value;
+              //       final isLiked = newsController.hasUserLiked(news!.newsId);
+              //
+              //       return Row(
+              //         children: [
+              //           GestureDetector(
+              //             onTap: () => newsController.toggleLike(news.newsId),
+              //             child: Row(
+              //               children: [
+              //                 Icon(
+              //                   isLiked
+              //                       ? Icons.favorite
+              //                       : Icons.favorite_border,
+              //                   color: isLiked ? Colors.red : Colors.grey,
+              //                 ),
+              //                 const SizedBox(width: 6),
+              //                 Text('${news.likes ?? 0} Likes'),
+              //               ],
+              //             ),
+              //           ),
+              //           // const SizedBox(width: 20),
+              //           // const Icon(Icons.remove_red_eye, color: Colors.grey),
+              //           // const SizedBox(width: 6),
+              //           // Text('${news.views ?? 0} Views'),
+              //         ],
+              //       );
+              //     })),
 
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Obx(() {
-                    final news = newsController.currentNews.value;
-                    final isLiked = newsController.hasUserLiked(news!.newsId);
-
-                    return Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => newsController.toggleLike(news.newsId),
-                          child: Row(
-                            children: [
-                              Icon(
-                                isLiked
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: isLiked ? Colors.red : Colors.grey,
-                              ),
-                              const SizedBox(width: 6),
-                              Text('${news.likes ?? 0} Likes'),
-                            ],
-                          ),
-                        ),
-                        // const SizedBox(width: 20),
-                        // const Icon(Icons.remove_red_eye, color: Colors.grey),
-                        // const SizedBox(width: 6),
-                        // Text('${news.views ?? 0} Views'),
-                      ],
-                    );
-                  })),
-
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
             ],
           ),
         );
@@ -379,3 +444,4 @@ String calculateReadingTime(String text) {
   final minutes = (wordCount / wordsPerMinute).ceil();
   return '$minutes min read';
 }
+

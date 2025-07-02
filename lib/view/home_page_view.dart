@@ -26,6 +26,8 @@ import '../model/news_model.dart';
 import 'add_news_screen.dart';
 import 'bookmark_view.dart';
 import 'detailed_news_view.dart';
+import 'info_pages/about_us_page.dart';
+import 'info_pages/donation_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -87,13 +89,24 @@ class _HomePageState extends State<HomePage> {
                     ),
                     ListTile(
                       leading:
+                      const Icon(Icons.handshake_outlined, color: Colors.white60),
+                      title: const Text(
+                        'Donation & Social Work',
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                      onTap: () {
+                        Get.to(() => const DonationPage());
+                      },
+                    ),
+                    ListTile(
+                      leading:
                       const Icon(Icons.info_outline_rounded, color: Colors.white60),
                       title: const Text(
                         'About Us',
                         style: TextStyle(color: Colors.white60),
                       ),
                       onTap: () {
-                        //Get.to(() => AboutUsPage());
+                        Get.to(() => const AboutUsPage());
                       },
                     ),
                     if (authController.isLoggedIn)
@@ -159,15 +172,19 @@ class _HomePageState extends State<HomePage> {
               children: [
                 const SizedBox(height: 10),
                 Obx(() {
-                  if (locationController.errorMessage.isNotEmpty) {
-                    return Center(
-                        child: Text(locationController.errorMessage.value));
-                  }
+                  // if (locationController.errorMessage.isNotEmpty) {
+                  //   return Center(
+                  //       child: Text(locationController.errorMessage.value));
+                  // }
 
                   final location = locationController.currentLocation.value;
 
+                  // if (location == null) {
+                  //   return const Text("Fetching Location...");
+                  // }
+
                   if (location == null) {
-                    return const Text("Fetching Location...");
+                    return const SizedBox();
                   }
 
                   return Padding(

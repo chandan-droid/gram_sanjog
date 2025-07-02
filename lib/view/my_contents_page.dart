@@ -95,7 +95,9 @@ class _MyContentsPageState extends State<MyContentsPage> {
                     final news = myNewsList[index];
                     return MyContentsNewsCard(
                       newsId: news.newsId,
-                      imageUrl:news.imageUrls[0],
+                      imageUrl: news.imageUrls.isNotEmpty
+                          ? news.imageUrls[0]
+                          : 'https://via.placeholder.com/150',
                       title: news.title,
                       subHeading: news.subHeading ?? '',
                       upvotes: news.likes ?? 0,
