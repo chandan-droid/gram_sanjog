@@ -19,15 +19,18 @@ import '../common/widgets/category_tile.dart';
 import '../common/widgets/compact_news_card.dart';
 import '../common/widgets/news_carousal.dart';
 import '../common/widgets/search_bar.dart';
+import '../common/widgets/search_delegate.dart';
 import '../controller/auth/auth_controller.dart';
 import '../controller/bookmark_controller.dart';
 import '../controller/location_controller.dart';
 import '../model/news_model.dart';
 import 'add_news_screen.dart';
+import 'add_shorts_page.dart';
 import 'bookmark_view.dart';
 import 'detailed_news_view.dart';
 import 'info_pages/about_us_page.dart';
 import 'info_pages/donation_page.dart';
+import 'info_pages/help_support_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -52,6 +55,7 @@ class _HomePageState extends State<HomePage> {
 
     newsController.getAllNews();
     topNewsController.fetchTopNews();
+    categoryController.fetchCategories();
     if (authController.firebaseUser.value != null) {
       userController.fetchUser(authController.firebaseUser.value!.id);
     }
@@ -78,6 +82,17 @@ class _HomePageState extends State<HomePage> {
                           )),
                     ListTile(
                       leading:
+                      const Icon(Icons.info_outline_rounded, color: Colors.white60),
+                      title: const Text(
+                        'About Us',
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                      onTap: () {
+                        Get.to(() => const AboutUsPage());
+                      },
+                    ),
+                    ListTile(
+                      leading:
                           const Icon(Icons.bookmark_border_rounded, color: Colors.white60),
                       title: const Text(
                         'Saved Contents',
@@ -85,6 +100,17 @@ class _HomePageState extends State<HomePage> {
                       ),
                       onTap: () {
                         Get.to(() => BookmarkScreen());
+                      },
+                    ),
+                    ListTile(
+                      leading:
+                      const Icon(Icons.help_outline_rounded, color: Colors.white60),
+                      title: const Text(
+                        'Help & Support',
+                        style: TextStyle(color: Colors.white60),
+                      ),
+                      onTap: () {
+                        Get.to(() => HelpSupportPage(isLoggedIn: authController.isLoggedIn));
                       },
                     ),
                     ListTile(
@@ -98,30 +124,39 @@ class _HomePageState extends State<HomePage> {
                         Get.to(() => const DonationPage());
                       },
                     ),
-                    ListTile(
-                      leading:
-                      const Icon(Icons.info_outline_rounded, color: Colors.white60),
-                      title: const Text(
-                        'About Us',
-                        style: TextStyle(color: Colors.white60),
-                      ),
-                      onTap: () {
-                        Get.to(() => const AboutUsPage());
-                      },
-                    ),
+
                     if (authController.isLoggedIn)
                       ListTile(
-                        leading: const Icon(Icons.logout_rounded,
-                            color: Colors.white60),
+                        leading: const Icon(Icons.logout_rounded, color: Colors.white60),
                         title: const Text(
                           'Log Out',
                           style: TextStyle(color: Colors.white60),
                         ),
                         onTap: () {
-                          authController.logout();
-                          authController.update();
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Confirm Logout"),
+                              content: const Text("Are you sure you want to log out?"),
+                              actions: [
+                                TextButton(
+                                  child: const Text("Cancel"),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                                TextButton(
+                                  child: const Text("Log Out"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // Close dialog
+                                    authController.logout();
+                                    authController.update();
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
                         },
                       ),
+
                     if (!authController.isLoggedIn)
                       ListTile(
                         leading: const Icon(Icons.login_rounded,
@@ -151,9 +186,17 @@ class _HomePageState extends State<HomePage> {
             height: 30,
           ),
         ),
-        actions: const [
-          SearchBarWidget(),
-          SizedBox(width: 10),
+        actions: [
+          IconButton(onPressed: () {
+
+              //openSearchSheet(context);
+              showSearch(
+                context: context,
+                delegate: NewsSearchDelegate(),
+              );
+          },
+          icon: const Icon(Icons.search)),
+          const SizedBox(width: 10),
         ],
       ),
       backgroundColor: AppColors.background,
@@ -165,6 +208,7 @@ class _HomePageState extends State<HomePage> {
             await newsController.getAllNews();
             await locationController.fetchLocation();
             await topNewsController.fetchTopNews();
+            await categoryController.fetchCategories();
           },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -243,36 +287,38 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 28))),
 
                 //category selector section
-                SizedBox(
-                  height: 40,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      final category = categories[index];
-                      return Obx(() {
-                        final isSelected = (category.categoryId ==
-                            categoryController.selectedCategoryId.value);
-                        //category.categoryId is the ID of current category.
-                        // categoryController.selectedCategoryId.value holds currently selected category ID.
-                        // You compare both — if match → this tile is selected.
+                Obx((){
+                  return SizedBox(
+                    height: 40,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: categoryController.categories.length,
+                      itemBuilder: (context, index) {
+                        final category = categoryController.categories[index];
+                        return Obx(() {
+                          final isSelected = (category.categoryId ==
+                              categoryController.selectedCategoryId.value);
+                          //category.categoryId is the ID of current category.
+                          // categoryController.selectedCategoryId.value holds currently selected category ID.
+                          // You compare both — if match → this tile is selected.
 
-                        return CategoryTile(
-                          category: category,
-                          isSelected: isSelected,
-                          onTap: () {
-                            categoryController
-                                .selectCategory(category.categoryId);
-                            if (kDebugMode) {
-                              print(
-                                  "Selected category ID: ${category.categoryId}");
-                            }
-                          },
-                        );
-                      });
-                    },
-                  ),
-                ),
+                          return CategoryTile(
+                            category: category,
+                            isSelected: isSelected,
+                            onTap: () {
+                              categoryController
+                                  .selectCategory(category.categoryId);
+                              if (kDebugMode) {
+                                print(
+                                    "Selected category ID: ${category.categoryId}");
+                              }
+                            },
+                          );
+                        });
+                      },
+                    ),
+                  );
+                }),
 
                 const SizedBox(height: 20),
 
@@ -328,23 +374,61 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          color: AppColors.highlight,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: IconButton(
-            onPressed: () {
-              if (authController.isLoggedIn) {
-                Get.to(const AddNewsPage());
-              } else {
-                Get.to(const LoginPage());
-              }
-            },
-            icon: const Icon(
-              Icons.add,
-              color: AppColors.iconPrimary,
-            )),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.highlight,
+        child: const Icon(Icons.add),
+        onPressed: () {
+          if(authController.isLoggedIn) {
+            showModalBottomSheet(
+              context: context,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              builder: (BuildContext context) {
+                return Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("What do you want to add?", style: Theme.of(context).textTheme.titleLarge),
+                      const SizedBox(height: 16),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context); // Close sheet
+                          Get.to(() => const AddNewsPage());
+                        },
+                        icon: const Icon(Icons.article_outlined),
+                        label: const Text("Add News"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.highlight,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size.fromHeight(48),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context); // Close sheet
+                          Get.to(() => const AddReelPage()); // Create this screen
+                        },
+                        icon: const Icon(Icons.video_collection_outlined),
+                        label: const Text("Add Shorts"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.accent,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size.fromHeight(48),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+
+          } else{
+            Get.to(const LoginPage());
+          }
+        },
       ),
     );
   }

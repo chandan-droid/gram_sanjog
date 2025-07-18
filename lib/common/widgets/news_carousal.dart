@@ -43,6 +43,7 @@ class _NewsCarouselState extends State<TopNewsCarousel>{
            }
            return PageView.builder(
                controller: pageController,
+
                itemCount: topNewsController.topNewsList.length,
                onPageChanged: (index){
                  setState(() {
@@ -54,6 +55,7 @@ class _NewsCarouselState extends State<TopNewsCarousel>{
                  final news = topNewsController.topNewsList[index];
                  final imageUrl = (news.imageUrls.isNotEmpty) ? news.imageUrls[0] : '';
                  return GestureDetector(
+                   key: ValueKey('topNews_$index'),
                    onTap: (){
                      Get.to(NewsDetailScreen(newsId:news.newsId,));
                    },

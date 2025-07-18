@@ -7,6 +7,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/model/user_model.dart';
+import 'package:gram_sanjog/view/page_layout.dart';
 
 import '../../service/auth_service.dart';
 import '../../view/home_page_view.dart';
@@ -69,7 +70,7 @@ class AuthController extends GetxController {
         );
 
 
-        Get.to(const HomePage());
+        Get.to(const MainPage());
 
       }
     } on FirebaseAuthException catch (e) {
@@ -90,7 +91,7 @@ class AuthController extends GetxController {
       await authService.login(email.trim(), pw.trim());
       Get.snackbar('Success', 'Logged in successfully',
           backgroundColor: AppColors.success,colorText: Colors.white);
-      Get.offAll(() => const HomePage());
+      Get.offAll(() => const MainPage());
       update();
     } on FirebaseAuthException catch (e) {
       errorMessage.value = 'login failed';

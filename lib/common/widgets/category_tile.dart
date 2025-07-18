@@ -37,10 +37,10 @@ class _CategoryTileState extends State<CategoryTile> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(widget.category.icon,
-                  color: isSelected ? AppColors.secondary : AppColors.primary.withOpacity(0.6),
-                  size: 16),
-              const SizedBox(width: 4),
+              // Icon(widget.category.icon,
+              //     color: isSelected ? AppColors.secondary : AppColors.primary.withOpacity(0.6),
+              //     size: 16),
+              // const SizedBox(width: 4),
               Text(
                 widget.category.name,
                 style: TextStyle(

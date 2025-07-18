@@ -147,6 +147,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                           final imageUrl = news.imageUrls[index];
                           return Image.network(
                             imageUrl,
+                            key: ValueKey('image_$index'),
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) =>
                                 const Center(child: Icon(Icons.broken_image)),
@@ -157,35 +158,44 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                           if (videoUrl.contains('youtube.com') ||
                               videoUrl.contains('youtube')) {
                             return AspectRatio(
+                              key: ValueKey('yt_$index'),
                               aspectRatio: 16 / 9,
                               child: SimpleYoutubePlayer(videoUrl: videoUrl),
                             );
                           } else {
-                            return Mp4VideoPlayerWidget(videoUrl: videoUrl);
+                            return Mp4VideoPlayerWidget(
+                                key: ValueKey('mp4_$index'),
+                                videoUrl: videoUrl);
                           }
                         }
                       },
                     ),
-                    // Left arrow
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      // left: 0,
-                      // top: 20,
-                      // bottom: 0,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios,
-                            color: Colors.white70),
-                        onPressed: () {
-                          if (_currentPage > 0) {
-                            _pageController.previousPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut);
-                          }
-                        },
+
+                    if (!(kIsWeb ))
+                      // show arrows
+                      // Left arrow
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        // left: 0,
+                        // top: 20,
+                        // bottom: 0,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios,
+                              color: Colors.white70),
+                          onPressed: () {
+                            if (_currentPage > 0) {
+                              _pageController.previousPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut);
+                            }
+                          },
+                        ),
                       ),
-                    ),
+
+
                     // Right arrow
-                    Align(
+                    if (!(kIsWeb ))
+                      Align(
                       alignment: Alignment.centerRight,
                       // right: 0,
                       // top: 0,
@@ -207,6 +217,34 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                     ),
                   ],
                 ),
+              ),
+              if (kIsWeb )
+                Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      if (_currentPage > 0) {
+                        _pageController.previousPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward_ios),
+                    onPressed: () {
+                      if (_currentPage < news.imageUrls.length + news.videoUrls.length - 1) {
+                        _pageController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
 
               const SizedBox(height: 12),

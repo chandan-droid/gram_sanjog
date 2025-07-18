@@ -9,7 +9,7 @@ class NewsService {
   // Get all news and convert to News model object list
   Future<List<News>> getAllNews() async {
     try {
-      final snapshot = await newsCollectionRef.get();
+      final snapshot = await newsCollectionRef.orderBy('timestamp', descending: true).get();
 
       return snapshot.docs.map((doc) {
         try {
