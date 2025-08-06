@@ -29,7 +29,7 @@ class SupportAttachmentController extends GetxController {
   }
 
 
-  Future<void> uploadToCloudinary() async {
+  Future<void> uploadToCloudinary() async  {
     if (pickedFile.value == null) return;
 
     isUploading.value = true;

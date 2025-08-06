@@ -70,7 +70,7 @@ class AuthController extends GetxController {
         );
 
 
-        Get.to(const MainPage());
+        Get.to(const HomePage());
 
       }
     } on FirebaseAuthException catch (e) {
@@ -91,7 +91,7 @@ class AuthController extends GetxController {
       await authService.login(email.trim(), pw.trim());
       Get.snackbar('Success', 'Logged in successfully',
           backgroundColor: AppColors.success,colorText: Colors.white);
-      Get.offAll(() => const MainPage());
+      Get.offAll(() => const HomePage());
       update();
     } on FirebaseAuthException catch (e) {
       errorMessage.value = 'login failed';

@@ -8,6 +8,8 @@ class ShortsController extends GetxController {
   final ShortsService _shortsService = ShortsService();
 
   var shortsList = <NewsShort>[].obs;
+  var myShortsList = <NewsShort>[].obs;
+
   var isLoading = false.obs;
 
   @override
@@ -36,6 +38,19 @@ class ShortsController extends GetxController {
       await loadShorts(); // Reload after upload
     } catch (e) {
       debugPrint('Failed to upload short: $e');
+    }
+  }
+
+  /// 🔹 Get shorts by specific user
+  Future<void> getMyShorts(String userId) async {
+    try {
+      isLoading.value = true;
+      final allShorts = await _shortsService.fetchShorts();
+      myShortsList.assignAll(allShorts.where((short) => short.createdBy == userId).toList());
+    } catch (e) {
+      debugPrint('Failed to fetch my shorts: $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 

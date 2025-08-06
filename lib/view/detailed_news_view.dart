@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
+import 'package:gram_sanjog/common/widgets/yt_player/youtube_player_iframe.dart';
 import 'package:gram_sanjog/controller/auth/user_controller.dart';
 import 'package:gram_sanjog/controller/bookmark_controller.dart';
 import 'package:gram_sanjog/controller/category_controller.dart';
@@ -14,7 +15,7 @@ import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../common/widgets/mp4videoplayer.dart';
-import '../common/widgets/youtube_player_widget.dart';
+import '../common/widgets/yt_player/youtube_player_flutter.dart';
 import '../controller/location_controller.dart';
 
 class NewsDetailScreen extends StatefulWidget {
@@ -160,7 +161,9 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                             return AspectRatio(
                               key: ValueKey('yt_$index'),
                               aspectRatio: 16 / 9,
-                              child: SimpleYoutubePlayer(videoUrl: videoUrl),
+                              child: kIsWeb
+                                  ? YoutubeIframePlayer(videoUrl: videoUrl)
+                                  : YoutubePlayerFlutter(videoUrl: videoUrl),
                             );
                           } else {
                             return Mp4VideoPlayerWidget(
@@ -171,7 +174,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       },
                     ),
 
-                    if (!(kIsWeb ))
+                    if (!(kIsWeb))
                       // show arrows
                       // Left arrow
                       Align(
@@ -192,60 +195,60 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                         ),
                       ),
 
-
                     // Right arrow
-                    if (!(kIsWeb ))
+                    if (!(kIsWeb))
                       Align(
-                      alignment: Alignment.centerRight,
-                      // right: 0,
-                      // top: 0,
-                      // bottom: 0,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios,
-                            color: Colors.white70),
-                        onPressed: () {
-                          if (_currentPage <
-                              news.imageUrls.length +
-                                  news.videoUrls.length -
-                                  1) {
-                            _pageController.nextPage(
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOut);
-                          }
-                        },
+                        alignment: Alignment.centerRight,
+                        // right: 0,
+                        // top: 0,
+                        // bottom: 0,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_forward_ios,
+                              color: Colors.white70),
+                          onPressed: () {
+                            if (_currentPage <
+                                news.imageUrls.length +
+                                    news.videoUrls.length -
+                                    1) {
+                              _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut);
+                            }
+                          },
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
-              if (kIsWeb )
+              if (kIsWeb)
                 Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
-                    onPressed: () {
-                      if (_currentPage > 0) {
-                        _pageController.previousPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward_ios),
-                    onPressed: () {
-                      if (_currentPage < news.imageUrls.length + news.videoUrls.length - 1) {
-                        _pageController.nextPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_ios),
+                      onPressed: () {
+                        if (_currentPage > 0) {
+                          _pageController.previousPage(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_forward_ios),
+                      onPressed: () {
+                        if (_currentPage <
+                            news.imageUrls.length + news.videoUrls.length - 1) {
+                          _pageController.nextPage(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
 
               const SizedBox(height: 12),
 
@@ -285,14 +288,18 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Obx(() {
                         final news = newsController.currentNews.value;
-                        final isLiked = newsController.hasUserLiked(news!.newsId);
+                        final isLiked =
+                            newsController.hasUserLiked(news!.newsId);
 
                         return Row(
                           children: [
                             GestureDetector(
-                              onTap: () => newsController.toggleLike(news.newsId),
+                              onTap: () =>
+                                  newsController.toggleLike(news.newsId),
                               child: Icon(
-                                isLiked ? Icons.favorite : Icons.favorite_border,
+                                isLiked
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
                                 color: isLiked ? AppColors.accent : Colors.grey,
                               ),
                             ),
@@ -381,7 +388,6 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
 
               const SizedBox(height: 12),
 
-
               // Author
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -414,7 +420,6 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
                         ],
                       ),
                     ),
-
 
                     const Spacer(),
                     Text(calculateReadingTime(news.description),
@@ -482,4 +487,3 @@ String calculateReadingTime(String text) {
   final minutes = (wordCount / wordsPerMinute).ceil();
   return '$minutes min read';
 }
-

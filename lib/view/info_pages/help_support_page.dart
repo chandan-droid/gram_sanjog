@@ -17,16 +17,39 @@ class HelpSupportPage extends StatefulWidget {
 }
 
 class _HelpSupportPageState extends State<HelpSupportPage> {
+
+  final List<String> _categories = [
+    'Women Safety',
+    'Youth & Education',
+    'Farmers issue',
+    'Electricity & Water issues',
+    'Senior citizen (pension & facilities)',
+    'Road & drain',
+    'House & buildings',
+    'Medical & health',
+    'Jobless',
+    'Ration card',
+    'Other',
+  ];
+
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _addressController = TextEditingController();
   final SupportAttachmentController supportController = Get.put(SupportAttachmentController());
   final UserController userController = Get.find<UserController>();
 
+  String? _selectedCategory;
+
+
   @override
   void dispose() {
     _descriptionController.dispose();
     _addressController.dispose();
+    _nameController.dispose();
+    _phoneController.dispose();
+    _selectedCategory = null;
     super.dispose();
   }
 
@@ -69,6 +92,37 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
         key: _formKey,
         child: ListView(
           children: [
+            const Text("Enter Full Name:", style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _nameController,
+              maxLines: 1,
+              decoration: const InputDecoration(
+                hintText: "Full name",
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) => value == null || value.isEmpty ? "Full name required" : null,
+            ),
+            const SizedBox(height: 20),
+            const Text("Enter Phone Number:", style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _phoneController,
+              maxLines:1,
+              decoration: const InputDecoration(
+                hintText: "Phone Number",
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Phone Number is required';
+                } else if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
+                  return 'Enter a valid 10-digit Indian phone number';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
             const Text("Describe your issue:", style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextFormField(
@@ -91,6 +145,28 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
                 border: OutlineInputBorder(),
               ),
               validator: (value) => value == null || value.isEmpty ? "Address required" : null,
+            ),
+            const SizedBox(height: 20),
+            const Text("Select Category:", style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: _selectedCategory,
+              items: _categories.map((category) {
+                return DropdownMenuItem(
+                  value: category,
+                  child: Text(category),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedCategory = value;
+                });
+              },
+              decoration: const InputDecoration(
+                hintText: "Choose a category",
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) => value == null || value.isEmpty ? "Category required" : null,
             ),
             const SizedBox(height: 20),
             const Text("Supporting Document (optional):"),
@@ -156,9 +232,12 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
         await FirebaseFirestore.instance.collection('support_requests').add({
           'userId': user?.id ?? "anonymous",
           'name': user?.name ?? "Anonymous",
+          'fullName' : _nameController.text.trim(),
+          'phone': _phoneController.text.trim(),
           'email': user?.email ?? "unknown@example.com",
           'description': _descriptionController.text.trim(),
           'address': _addressController.text.trim(),
+          'category': _selectedCategory ?? "other",
           'fileUrl': uploadedUrl,
           'status': 'pending',
           'submittedAt': Timestamp.now(),

@@ -78,6 +78,7 @@ class _AddReelPageState extends State<AddReelPage> {
       createdBy: currentUserId,
       timestamp: DateTime.now(),
       tags: tags ,
+      isVerified: false
     );
 
     await shortsController.uploadShort(short);

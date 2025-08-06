@@ -20,6 +20,7 @@ class ShortsService {
   Future<List<NewsShort>> fetchShorts() async {
     try {
       final snapshot = await _shortsRef
+          .where('isVerified' , isEqualTo: true)
           .orderBy('timestamp', descending: true)
           .get();
 

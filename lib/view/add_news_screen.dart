@@ -45,7 +45,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
     'state*': TextEditingController(),
     'district*': TextEditingController(),
     'block*': TextEditingController(),
-    'gp*': TextEditingController(),
+    'gp/ward*': TextEditingController(),
   };
 
   String selectedCategory = "";
@@ -68,7 +68,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
       locationControllers['state*']!.text = news.locationDetails?.state ?? '';
       locationControllers['district*']!.text = news.locationDetails?.district ?? '';
       locationControllers['block*']!.text = news.locationDetails?.block ?? '';
-      locationControllers['gp*']!.text = news.locationDetails?.gp ?? '';
+      locationControllers['gp/ward*']!.text = news.locationDetails?.gp ?? '';
     }
   }
 
@@ -343,7 +343,7 @@ class _AddNewsPageState extends State<AddNewsPage> {
                             state: locationControllers['state*']!.text.trim(),
                             district: locationControllers['district*']!.text.trim(),
                             block: locationControllers['block*']!.text.trim(),
-                            gp: locationControllers['gp*']!.text.trim(),
+                            gp: locationControllers['gp/ward*']!.text.trim(),
                           );
 
                           final news = News(

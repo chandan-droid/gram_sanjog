@@ -58,8 +58,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.highlight),
         useMaterial3: true,
       ),
-      home: MainPage(),
-      //initialRoute: '/home',
+      // home: MainPage(),
+      initialRoute: '/home',
       getPages: [
         GetPage(
           name: '/home',

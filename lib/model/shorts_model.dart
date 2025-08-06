@@ -8,6 +8,8 @@ class NewsShort {
   final String createdBy; // Publisher or reporter name
   final DateTime timestamp; // When it was published
   final List<String> tags; // Hashtags like #Election2025
+  final bool isVerified;
+  final String? verifiedBy;
 
   // Future-use fields:
   // final int likes;
@@ -23,6 +25,8 @@ class NewsShort {
     required this.createdBy,
     required this.timestamp,
     required this.tags,
+    this.isVerified = false,
+    this.verifiedBy,
     // this.likes = 0,
     // this.views = 0,
     // this.commentsCount = 0,
@@ -38,6 +42,8 @@ class NewsShort {
       createdBy: data['source'] ?? '',
       timestamp: (data['timestamp'] as Timestamp).toDate(),
       tags: List<String>.from(data['tags'] ?? []),
+      isVerified: data['isVerified'] ?? false,
+      verifiedBy: data['verifiedBy'], // ✅ READ from Firestore
       // likes: data['likes'] ?? 0,
       // views: data['views'] ?? 0,
       // commentsCount: data['commentsCount'] ?? 0,
@@ -53,6 +59,8 @@ class NewsShort {
       'source': createdBy,
       'timestamp': timestamp,
       'tags': tags,
+      'isVerified': isVerified,
+      'verifiedBy': verifiedBy, // ✅ WRITE to Firestore
       // 'likes': likes,
       // 'views': views,
       // 'commentsCount': commentsCount,

@@ -11,6 +11,7 @@ import 'package:gram_sanjog/controller/news_controller.dart';
 import 'package:gram_sanjog/controller/search_controller.dart';
 import 'package:gram_sanjog/controller/top_news_controller.dart';
 import 'package:gram_sanjog/view/auth/log_in_screen.dart';
+import 'package:gram_sanjog/view/shorts_page.dart';
 import 'package:gram_sanjog/view/user_profile_page.dart';
 
 import '../common/constants.dart';
@@ -31,6 +32,8 @@ import 'detailed_news_view.dart';
 import 'info_pages/about_us_page.dart';
 import 'info_pages/donation_page.dart';
 import 'info_pages/help_support_page.dart';
+import 'info_pages/imp_contacts_page.dart';
+import 'info_pages/imp_links_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -102,11 +105,22 @@ class _HomePageState extends State<HomePage> {
                         Get.to(() => BookmarkScreen());
                       },
                     ),
+                    // ListTile(
+                    //   leading:
+                    //   const Icon(Icons.video_collection_outlined, color: Colors.white60),
+                    //   title: const Text(
+                    //     'Short Videos',
+                    //     style: TextStyle(color: Colors.white60),
+                    //   ),
+                    //   onTap: () {
+                    //     Get.to(() => const ShortsPage());
+                    //   },
+                    // ),
                     ListTile(
                       leading:
                       const Icon(Icons.help_outline_rounded, color: Colors.white60),
                       title: const Text(
-                        'Help & Support',
+                        'Help & Support(Grievance)',
                         style: TextStyle(color: Colors.white60),
                       ),
                       onTap: () {
@@ -124,6 +138,28 @@ class _HomePageState extends State<HomePage> {
                         Get.to(() => const DonationPage());
                       },
                     ),
+                    // ListTile(
+                    //   leading:
+                    //   const Icon(Icons.phone, color: Colors.white60),
+                    //   title: const Text(
+                    //     'Important Contacts',
+                    //     style: TextStyle(color: Colors.white60),
+                    //   ),
+                    //   onTap: () {
+                    //     Get.to(() =>  ImportantContactsPage());
+                    //   },
+                    // ),
+                    // ListTile(
+                    //   leading:
+                    //   const Icon(Icons.link_rounded, color: Colors.white60),
+                    //   title: const Text(
+                    //     'Important Links',
+                    //     style: TextStyle(color: Colors.white60),
+                    //   ),
+                    //   onTap: () {
+                    //     Get.to(() =>  ImportantLinksPage());
+                    //   },
+                    // ),
 
                     if (authController.isLoggedIn)
                       ListTile(
@@ -379,51 +415,52 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
         onPressed: () {
           if(authController.isLoggedIn) {
-            showModalBottomSheet(
-              context: context,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-              ),
-              builder: (BuildContext context) {
-                return Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text("What do you want to add?", style: Theme.of(context).textTheme.titleLarge),
-                      const SizedBox(height: 16),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pop(context); // Close sheet
-                          Get.to(() => const AddNewsPage());
-                        },
-                        icon: const Icon(Icons.article_outlined),
-                        label: const Text("Add News"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.highlight,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(48),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pop(context); // Close sheet
-                          Get.to(() => const AddReelPage()); // Create this screen
-                        },
-                        icon: const Icon(Icons.video_collection_outlined),
-                        label: const Text("Add Shorts"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(48),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
+            Get.to(() => const AddNewsPage());
+            // showModalBottomSheet(
+            //   context: context,
+            //   shape: const RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            //   ),
+            //   builder: (BuildContext context) {
+            //     return Padding(
+            //       padding: const EdgeInsets.all(24),
+            //       child: Column(
+            //         mainAxisSize: MainAxisSize.min,
+            //         children: [
+            //           Text("What do you want to add?", style: Theme.of(context).textTheme.titleLarge),
+            //           const SizedBox(height: 16),
+            //           ElevatedButton.icon(
+            //             onPressed: () {
+            //               Navigator.pop(context); // Close sheet
+            //               Get.to(() => const AddNewsPage());
+            //             },
+            //             icon: const Icon(Icons.article_outlined),
+            //             label: const Text("Add News"),
+            //             style: ElevatedButton.styleFrom(
+            //               backgroundColor: AppColors.highlight,
+            //               foregroundColor: Colors.white,
+            //               minimumSize: const Size.fromHeight(48),
+            //             ),
+            //           ),
+            //           const SizedBox(height: 10),
+            //           ElevatedButton.icon(
+            //             onPressed: () {
+            //               Navigator.pop(context); // Close sheet
+            //               Get.to(() => const AddReelPage()); // Create this screen
+            //             },
+            //             icon: const Icon(Icons.video_collection_outlined),
+            //             label: const Text("Add Shorts"),
+            //             style: ElevatedButton.styleFrom(
+            //               backgroundColor: AppColors.accent,
+            //               foregroundColor: Colors.white,
+            //               minimumSize: const Size.fromHeight(48),
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     );
+            //   },
+            // );
 
           } else{
             Get.to(const LoginPage());
