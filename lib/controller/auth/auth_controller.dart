@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/model/user_model.dart';
 import 'package:gram_sanjog/view/page_layout.dart';
@@ -14,6 +12,7 @@ import '../../view/home_page_view.dart';
 
 class AuthController extends GetxController {
   final AuthService authService = AuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Rxn<UserProfile> firebaseUser = Rxn<UserProfile>();
 
   final signupData = SignupData();
@@ -21,30 +20,42 @@ class AuthController extends GetxController {
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
+  // Add phone auth state
+  final phoneAuthUser = Rxn<auth.User>();
+
+  void handleAuthChanged(UserProfile? user) {
+    if (user == null) {
+      // User is logged out
+      Get.offAllNamed('/login');
+    } else {
+      // User is logged in
+      Get.offAllNamed('/home');
+    }
+  }
+
   @override
   void onInit() {
-    firebaseUser.bindStream(
-      authService.userChanges.map((user) {
-        if (user != null) {
-          return UserProfile(
-            id: user.uid,
-            name: user.displayName ?? '',
-            email: user.email ?? '',
-            phoneNumber: user.phoneNumber ?? '',
-            country: '',
-            state: '',
-            district: '',
-            block: '',
-            gpWard: '',
-            villageAddress: '',
-            whatsappNumber: '',
-          );
-        } else {
-          return null;
-        }
-      }),
-    );
     super.onInit();
+    // Listen to auth state changes including phone auth
+    ever(firebaseUser, handleAuthChanged);
+    firebaseUser.bindStream(authService.userChanges.map((user) {
+      if (user != null) {
+        return UserProfile(
+          id: user.uid,
+          name: user.displayName ?? '',
+          email: user.email ?? '',
+          phoneNumber: user.phoneNumber ?? '',
+          country: '',
+          state: '',
+          district: '',
+          block: '',
+          gpWard: '',
+          villageAddress: '',
+          whatsappNumber: '',
+        );
+      }
+      return null;
+    }));
   }
 
   Future<void> signup(SignupData signupData) async {
@@ -73,7 +84,7 @@ class AuthController extends GetxController {
         Get.to(const HomePage());
 
       }
-    } on FirebaseAuthException catch (e) {
+    } on auth.FirebaseAuthException catch (e) {
       errorMessage.value = e.message ?? 'Signup failed';
       Get.snackbar('Error', errorMessage.value, colorText: Colors.white, backgroundColor: Colors.red);
     } catch (e) {
@@ -93,7 +104,7 @@ class AuthController extends GetxController {
           backgroundColor: AppColors.success,colorText: Colors.white);
       Get.offAll(() => const HomePage());
       update();
-    } on FirebaseAuthException catch (e) {
+    } on auth.FirebaseAuthException catch (e) {
       errorMessage.value = 'login failed';
       Get.snackbar('Error', 'Log in failed.',
           backgroundColor: AppColors.error,colorText: Colors.white);
@@ -113,6 +124,50 @@ class AuthController extends GetxController {
   }
 
   bool get isLoggedIn => firebaseUser.value != null;
+
+  Future<bool> handlePhoneAuthSuccess(auth.UserCredential userCredential) async {
+    try {
+      final user = userCredential.user;
+      if (user != null) {
+        phoneAuthUser.value = user;
+
+        // Check if user exists in Firestore
+        final userDoc = await _firestore.collection('users').doc(user.uid).get();
+
+        if (!userDoc.exists) {
+          // Create new user document for phone auth users
+          await _firestore.collection('users').doc(user.uid).set({
+            'id': user.uid,
+            'phone': user.phoneNumber,
+            'name': 'User${user.uid.substring(0, 4)}',
+            'createdAt': DateTime.now(),
+            'role': 'user',
+          });
+        }
+
+        // Convert auth.User to UserProfile
+        firebaseUser.value = UserProfile(
+          id: user.uid,
+          name: 'User${user.uid.substring(0, 4)}',
+          email: user.email ?? '',
+          phoneNumber: user.phoneNumber ?? '',
+          country: '',
+          state: '',
+          district: '',
+          block: '',
+          gpWard: '',
+          villageAddress: '',
+          whatsappNumber: user.phoneNumber ?? '',
+        );
+
+        return true;
+      }
+      return false;
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to complete phone authentication');
+      return false;
+    }
+  }
 }
 
 class SignupData {
