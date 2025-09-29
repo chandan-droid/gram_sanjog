@@ -11,8 +11,8 @@ import 'package:gram_sanjog/view/add_news_screen.dart';
 import 'package:gram_sanjog/view/shorts_page.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-import '../common/widgets/video_thumbnail.dart';
-import 'add_shorts_page.dart';
+import '../../common/widgets/video_thumbnail.dart';
+import '../add_shorts_page.dart';
 
 class MyContentsPage extends StatefulWidget {
   const MyContentsPage({super.key});

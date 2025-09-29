@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -27,12 +28,18 @@ void main() async{
   );
 
   await GetStorage.init();
-  Get.put(BookmarkController());
-  Get.put(TopNewsController());
-  Get.lazyPut(() => NewsController());
-  Get.put(SearchController());
-  Get.put(AuthController());
-  Get.put(UserController());
+  try {
+    Get.put(BookmarkController());
+    Get.put(TopNewsController());
+    Get.lazyPut(() => NewsController());
+    Get.put(SearchController());
+    Get.put(AuthController());
+    Get.put(UserController());
+  } catch (e, s) {
+    if (kDebugMode) {
+      print("Controller init error: $e\n$s");
+    }
+  }
 
   runApp(const MyApp());
 }

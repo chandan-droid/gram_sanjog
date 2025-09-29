@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+
 class AppColors {
   // === Brand Identity ===
-  static const Color primary = Color(0xFF000000);     // Black - used for primary text
-  static const Color secondary = Color(0xFF34571C);   // Dark Green - used for secondary UI
-  static const Color accent = Color(0xFF820707);      // Maroon Red - used for CTAs
-  static const Color highlight = Color(0xFF6C8E2E);   // Light Green - used for emphasis
-  static const Color background = Colors.white;  // Light Gray - background areas
+  static const Color primary = Color(0xFF000000);     // Black - primary text, icons
+  static const Color secondary = Color(0xFF34571C);   // Dark Green - secondary UI, highlights
+  static const Color accent = Color(0xFF820707);      // Maroon Red - CTAs, active elements
+  static const Color highlight = Color(0xFF6C8E2E);   // Light Green - emphasis, success
+  static const Color background = Color(0xFFFFFFFF);  // White - main background
 
   // === Text Colors ===
   static const Color textPrimary = primary;           // Headlines, titles

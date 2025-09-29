@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
 
-import '../../view/user_profile_page.dart';
+import '../../view/profile/user_profile_page.dart';
 
 class CustomDrawerHeader extends StatelessWidget {
   final String name;

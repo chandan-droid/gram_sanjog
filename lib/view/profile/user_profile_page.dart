@@ -4,11 +4,11 @@ import 'package:gram_sanjog/controller/auth/auth_controller.dart';
 import 'package:gram_sanjog/controller/auth/user_controller.dart';
 import 'package:gram_sanjog/common/theme/theme.dart';
 import 'package:gram_sanjog/view/auth/log_in_screen.dart';
-import 'package:gram_sanjog/view/my_contents_page.dart';
+import 'package:gram_sanjog/view/profile/my_contents_page.dart';
 
-import '../common/widgets/collapsible_tile.dart';
-import '../common/widgets/editable_profile_field.dart';
-import '../model/user_model.dart';
+import '../../common/widgets/collapsible_tile.dart';
+import '../../common/widgets/editable_profile_field.dart';
+import '../../model/user_model.dart';
 
 class UserProfilePage extends StatefulWidget {
 
