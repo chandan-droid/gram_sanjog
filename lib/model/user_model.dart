@@ -14,6 +14,7 @@ class UserProfile {
    String? educationQualification;
    String? certification;
    List<Map<String, dynamic>>? socialLinks;
+   String role; // Added role field
 
   UserProfile({
     required this.id,
@@ -31,6 +32,7 @@ class UserProfile {
      this.educationQualification,
      this.certification,
      this.socialLinks,
+     this.role = 'user', // Default role
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class UserProfile {
       educationQualification: json['educationQualification'] ?? '',
       certification: json['certification'] ?? '',
       socialLinks: List<Map<String, dynamic>>.from(json['socialLinks'] ?? []),
+      role: json['role'] ?? 'user',
     );
   }
 
@@ -70,6 +73,7 @@ class UserProfile {
       'educationQualification': educationQualification,
       'certification': certification,
       'socialLinks': socialLinks,
+      'role': role,
     };
   }
 
@@ -89,6 +93,7 @@ class UserProfile {
     String? educationQualification,
     String? certification,
     List<Map<String, dynamic>>? socialLinks,
+    String? role,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -106,6 +111,7 @@ class UserProfile {
       educationQualification: educationQualification ?? this.educationQualification,
       certification: certification ?? this.certification,
       socialLinks: socialLinks ?? this.socialLinks,
+      role: role ?? this.role,
     );
   }
 }

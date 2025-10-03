@@ -32,6 +32,7 @@ class LoginPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // App Logo
+                  SizedBox(height: 200,),
                   Container(
                     margin: const EdgeInsets.all(0.8),
                     child: Image.asset(
@@ -132,57 +133,57 @@ class LoginPage extends StatelessWidget {
                       style: TextStyle(color: AppColors.highlight),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: AppColors.border,
-                          thickness: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'OR',
-                          style: TextStyle(
-                            color: AppColors.textMuted,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: AppColors.border,
-                          thickness: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  OutlinedButton.icon(
-                    onPressed: () => Get.to(() => const PhoneLoginPage()),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      side: BorderSide(color: AppColors.border),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    icon: Icon(
-                      Icons.phone_android_rounded,
-                      color: AppColors.textSecondary,
-                    ),
-                    label: Text(
-                      'Continue with Phone',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(height: 16),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Divider(
+                  //         color: AppColors.border,
+                  //         thickness: 1,
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //       child: Text(
+                  //         'OR',
+                  //         style: TextStyle(
+                  //           color: AppColors.textMuted,
+                  //           fontSize: 14,
+                  //           fontWeight: FontWeight.w500,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: Divider(
+                  //         color: AppColors.border,
+                  //         thickness: 1,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 16),
+                  // OutlinedButton.icon(
+                  //   onPressed: () => Get.to(() => const PhoneLoginPage()),
+                  //   style: OutlinedButton.styleFrom(
+                  //     padding: const EdgeInsets.symmetric(vertical: 12),
+                  //     side: BorderSide(color: AppColors.border),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(8),
+                  //     ),
+                  //   ),
+                  //   icon: Icon(
+                  //     Icons.phone_android_rounded,
+                  //     color: AppColors.textSecondary,
+                  //   ),
+                  //   label: Text(
+                  //     'Continue with Phone',
+                  //     style: TextStyle(
+                  //       color: AppColors.textSecondary,
+                  //       fontSize: 16,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

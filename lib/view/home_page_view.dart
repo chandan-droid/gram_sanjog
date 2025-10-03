@@ -13,6 +13,7 @@ import 'package:gram_sanjog/controller/top_news_controller.dart';
 import 'package:gram_sanjog/view/auth/log_in_screen.dart';
 import 'package:gram_sanjog/view/shorts_page.dart';
 import 'package:gram_sanjog/view/profile/user_profile_page.dart';
+import 'package:gram_sanjog/view/survey/survey_list_page_new.dart';
 
 import '../common/constants.dart';
 import '../common/widgets/account_drawer_header.dart';
@@ -34,6 +35,7 @@ import 'info_pages/donation_page.dart';
 import 'info_pages/help_support_page.dart';
 import 'info_pages/imp_contacts_page.dart';
 import 'info_pages/imp_links_page.dart';
+import '../common/widgets/skeleton_loading.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -107,6 +109,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     child: ListView(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       children: [
+                        if (authController.isLoggedIn &&
+                            userController.userData.value?.role == 'panchayat_captain')
+                          _buildDrawerItem(
+                            icon: Icons.people_outline_rounded,
+                            title: 'Citizen Survey',
+                            onTap: () => Get.to(() => SurveyListPage(
+                              surveyorId: authController.firebaseUser.value?.id ?? '',
+                            )),
+                          ),
                         _buildDrawerItem(
                           icon: Icons.info_outline_rounded,
                           title: 'About Us',
@@ -208,7 +219,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildLocationHeader(),
+                  Obx(() {
+                    if (locationController.isLoading.value) {
+                      return const LocationHeaderSkeleton();
+                    }
+                    return _buildLocationHeader();
+                  }),
                   const SizedBox(height: 24),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -256,7 +272,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const TopNewsCarousel(),
+                  Obx(() {
+                    if (topNewsController.isLoading.value) {
+                      return const TopNewsSkeleton();
+                    }
+                    return const TopNewsCarousel();
+                  }),
                   const SizedBox(height: 24),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
@@ -270,10 +291,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     ),
                   ),
                   const SizedBox(height: 12),
-                  SizedBox(
-                    height: 44,
-                    child: Obx(() {
-                      return ListView.builder(
+                  Obx(() {
+                    if (categoryController.isLoading.value) {
+                      return const CategorySkeleton();
+                    }
+                    return SizedBox(
+                      height: 44,
+                      child: ListView.builder(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         scrollDirection: Axis.horizontal,
                         itemCount: categoryController.categories.length,
@@ -293,9 +317,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             );
                           });
                         },
-                      );
-                    }),
-                  ),
+                      )
+                    );
+                    // return const SizedBox();
+                  }),
                   const SizedBox(height: 16),
                 ],
               ),
@@ -303,23 +328,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: Obx(() {
+                if (newsController.isLoading.value) {
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => const NewsCardSkeleton(),
+                      childCount: 5,
+                    ),
+                  );
+                }
+
                 var selectedCategoryId = categoryController.selectedCategoryId.value;
                 final filteredNews = newsController.newsList
                     .where((news) => news.categoryId == selectedCategoryId)
                     .toList();
-
-                if (newsController.isLoading.value) {
-                  return const SliverToBoxAdapter(
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(32.0),
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent),
-                        ),
-                      ),
-                    ),
-                  );
-                }
 
                 if (filteredNews.isEmpty) {
                   return SliverToBoxAdapter(
@@ -407,7 +428,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   }
                 },
               ),
-            ),
+            )
           );
         },
       ),
@@ -516,7 +537,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ),
         actions: [
           TextButton(
-            child: Text(
+            child: const Text(
               "Cancel",
               style: TextStyle(color: AppColors.textSecondary),
             ),

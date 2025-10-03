@@ -1,29 +1,11 @@
 {
   "project_info": {
     "project_number": "271452705878",
+    "firebase_url": "https://gram-sanjog-default-rtdb.firebaseio.com",
     "project_id": "gram-sanjog",
     "storage_bucket": "gram-sanjog.firebasestorage.app"
   },
   "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:271452705878:android:1aac2741d969f8948c17f7",
-        "android_client_info": {
-          "package_name": "com.example.gram_sanjog"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCmXn8jGX8lH9F4QCKLaxQrCk5t-d3zROI"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:271452705878:android:f2fe30be0a40da118c17f7",

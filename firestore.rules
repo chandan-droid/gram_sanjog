@@ -1,0 +1,13 @@
+ {
+  "rules": {
+    "surveys": {
+      "$surveyId": {
+        // Only authenticated users can read surveys
+        ".read": "auth != null",
+        // Only panchayat captains can create surveys
+        ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'panchayat_captain'"
+      }
+    }
+  }
+}
+

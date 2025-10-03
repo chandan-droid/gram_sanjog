@@ -23,6 +23,7 @@ class LocationController extends GetxController {
 
 
   RxString errorMessage = ''.obs;
+  final isLoading = false.obs;
 
   @override
   void onInit() {
@@ -32,6 +33,7 @@ class LocationController extends GetxController {
 
   Future<void> fetchLocation() async {
     try {
+      isLoading.value = true;
       bool serviceEnabled = await _location.serviceEnabled();
       if (!serviceEnabled) { // if location service is not enabled, request for location service
         serviceEnabled = await _location.requestService();
@@ -85,6 +87,8 @@ class LocationController extends GetxController {
       }
     } catch (e) {
       errorMessage.value = 'Error fetching location.';
+    } finally {
+      isLoading.value = false;
     }
   }
 
