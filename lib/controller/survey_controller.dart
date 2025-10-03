@@ -48,72 +48,59 @@ class SurveyController extends GetxController {
   Future<void> addSurvey({
     required String citizenName,
     required String phoneNumber,
-    required String aadharNumber,
     required String landmark,
     required String notes,
     required String surveyorId,
     required String category,
+    required String district,
+    required String block,
+    required String gpWard,
+    required String villageStreet,
+    required String state,
   }) async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
 
-      // Get current location
       if (currentLocation.value == null) {
         await _initializeLocation();
       }
-
       if (currentLocation.value == null) {
         throw 'Unable to get location details';
       }
 
       final location = currentLocation.value!;
 
-      // Get uploaded attachment URLs
       final attachmentUrls = attachmentController.uploadedFileUrls;
       if (attachmentUrls.isEmpty) {
         throw 'Please upload at least one photo';
       }
 
-      // Create survey document with enhanced location details
       DocumentReference docRef = _firestore.collection('surveys').doc();
       final survey = SurveyModel(
         id: docRef.id,
         citizenName: citizenName,
         phoneNumber: phoneNumber,
-        aadharNumber: aadharNumber,
-        location: LocationDetails(
-          area: location.area,
-          city: location.city,
-          state: location.state,
-          pincode: location.pincode,
-          landmark: landmark,
-          latitude: location.latitude,
-          longitude: location.longitude,
-          geohash: location.geohash,
-          block: location.block,
-          district: location.district,
-          address: location.address,
-        ),
-        attachmentUrls: attachmentUrls.toList(),
         notes: notes,
         surveyorId: surveyorId,
-        createdAt: DateTime.now(),
         category: category,
+        createdAt: DateTime.now(),
         status: 'pending',
+        attachmentUrls: attachmentUrls.toList(),
+        location: LocationDetails(
+          latitude: location.latitude,
+          longitude: location.longitude,
+          district: district,
+          block: block,
+          gpWard: gpWard,
+          villageStreet: villageStreet,
+          state: state,
+        ),
       );
 
-      // Convert to JSON and save
-      final data = survey.toJson();
-      print('Saving survey data: $data');
-      await docRef.set(data);
-
-      // Refresh the surveys list
+      await docRef.set(survey.toJson());
       await fetchSurveys(surveyorId);
-
-      // Clear attachments after successful upload
       attachmentController.clearUploads();
-
       Get.back();
       Get.snackbar(
         'Success',
@@ -122,7 +109,6 @@ class SurveyController extends GetxController {
         colorText: Colors.white,
       );
     } catch (e) {
-      print('Error adding survey: $e');
       errorMessage.value = e.toString();
       Get.snackbar(
         'Error',
@@ -139,40 +125,26 @@ class SurveyController extends GetxController {
     try {
       isLoading.value = true;
       errorMessage.value = '';
-      print('Fetching surveys for surveyorId: $surveyorId');
-
       final QuerySnapshot snapshot = await _firestore
           .collection('surveys')
           .where('surveyorId', isEqualTo: surveyorId)
           .get();
 
-      print('Found ${snapshot.docs.length} surveys');
-
       final List<SurveyModel> fetchedSurveys = [];
       for (var doc in snapshot.docs) {
         try {
           final data = doc.data() as Map<String, dynamic>;
-          print('Processing survey document: ${doc.id}');
-          print('Document data: $data');
-
-          // Ensure the ID is included in the data
           if (!data.containsKey('id')) {
             data['id'] = doc.id;
           }
-
           final survey = SurveyModel.fromJson(data);
           fetchedSurveys.add(survey);
         } catch (e) {
-          print('Error processing survey document ${doc.id}: $e');
           continue;
         }
       }
-
       surveys.value = fetchedSurveys;
-      print('Successfully loaded ${surveys.length} surveys');
-
     } catch (e) {
-      print('Error fetching surveys: $e');
       errorMessage.value = e.toString();
       Get.snackbar(
         'Error',

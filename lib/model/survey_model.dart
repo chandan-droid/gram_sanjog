@@ -5,7 +5,6 @@ class SurveyModel {
   final String id;
   final String citizenName;
   final String phoneNumber;
-  final String aadharNumber;
   final LocationDetails location;
   final List<String> attachmentUrls;
   final String notes;
@@ -18,7 +17,6 @@ class SurveyModel {
     required this.id,
     required this.citizenName,
     required this.phoneNumber,
-    required this.aadharNumber,
     required this.location,
     required this.attachmentUrls,
     required this.notes,
@@ -33,7 +31,6 @@ class SurveyModel {
       'id': id,
       'citizenName': citizenName,
       'phoneNumber': phoneNumber,
-      'aadharNumber': aadharNumber,
       'location': location.toJson(),
       'attachmentUrls': attachmentUrls,
       'notes': notes,
@@ -49,7 +46,6 @@ class SurveyModel {
       id: json['id'] as String,
       citizenName: json['citizenName'] as String,
       phoneNumber: json['phoneNumber'] as String,
-      aadharNumber: json['aadharNumber'] as String,
       location: LocationDetails.fromJson(json['location'] as Map<String, dynamic>),
       attachmentUrls: List<String>.from(json['attachmentUrls']),
       notes: json['notes'] as String,

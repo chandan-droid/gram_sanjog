@@ -24,20 +24,39 @@ class _AddSurveyPageState extends State<AddSurveyPage> {
 
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _aadharController = TextEditingController();
   final _notesController = TextEditingController();
   final _landmarkController = TextEditingController();
 
-  String _selectedCategory = 'Health';
-  final List<String> _categories = ['Health', 'Education', 'Infrastructure', 'Social Welfare', 'Other'];
+  // New controllers for editable location fields
+  final _districtController = TextEditingController();
+  final _blockController = TextEditingController();
+  final _gpWardController = TextEditingController();
+  final _villageStreetController = TextEditingController();
+
+  String _selectedCategory = 'General';
+  final List<String> _categories = [
+    'Farmer & Agriculture',
+    'Job & Employment',
+    'Health',
+    'Education',
+    'Women & Child Safety',
+    'Infrastructure Road & Building',
+    'Water and Electricity',
+    'Pension & Senior Citizen',
+    'General',
+    'Other'
+  ];
 
   @override
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _aadharController.dispose();
     _notesController.dispose();
     _landmarkController.dispose();
+    _districtController.dispose();
+    _blockController.dispose();
+    _gpWardController.dispose();
+    _villageStreetController.dispose();
     super.dispose();
   }
 
@@ -75,14 +94,6 @@ class _AddSurveyPageState extends State<AddSurveyPage> {
                   keyboardType: TextInputType.phone,
                   maxLength: 10,
                   validator: (v) => v?.length != 10 ? 'Enter valid phone number' : null,
-                ),
-                const SizedBox(height: 16),
-                _buildTextField(
-                  controller: _aadharController,
-                  label: 'Aadhar Number',
-                  keyboardType: TextInputType.number,
-                  maxLength: 12,
-                  validator: (v) => v?.length != 12 ? 'Enter valid Aadhar number' : null,
                 ),
                 const SizedBox(height: 24),
 
@@ -125,12 +136,6 @@ class _AddSurveyPageState extends State<AddSurveyPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTextField(
-                        controller: _landmarkController,
-                        label: 'Landmark*',
-                        validator: (v) => v?.isEmpty ?? true ? 'Landmark is required' : null,
-                      ),
-                      const SizedBox(height: 16),
                       Obx(() {
                         final location = _surveyController.currentLocation.value;
                         if (location == null) {
@@ -138,34 +143,62 @@ class _AddSurveyPageState extends State<AddSurveyPage> {
                             child: CircularProgressIndicator(),
                           );
                         }
+
+                        // Populate editable fields initially if empty
+                        if (_districtController.text.isEmpty) {
+                          _districtController.text = location.district;
+                        }
+                        if (_blockController.text.isEmpty) {
+                          _blockController.text = location.block;
+                        }
+
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildLocationDetail('Area', location.area),
-                            _buildLocationDetail('Block', location.block),
-                            _buildLocationDetail('District', location.district),
-                            _buildLocationDetail('City', location.city),
-                            _buildLocationDetail('State', location.state),
-                            _buildLocationDetail('PIN', location.pincode),
-                            const Divider(height: 24),
+
                             _buildLocationDetail(
                               'Coordinates',
                               '${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}',
                             ),
-                            if (location.address != null)
-                              _buildLocationDetail('Address', location.address!),
+                            const SizedBox(height: 16),
+
+                            // Editable fields for manual input
+                            _buildTextField(
+                              controller: _districtController,
+                              label: 'District',
+                              validator: (v) => v?.isEmpty ?? true ? 'District is required' : null,
+                            ),
+                            const SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _blockController,
+                              label: 'Block',
+                              validator: (v) => v?.isEmpty ?? true ? 'Block is required' : null,
+                            ),
+                            const SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _gpWardController,
+                              label: 'GP/Ward',
+                              validator: (v) => v?.isEmpty ?? true ? 'GP/Ward is required' : null,
+                            ),
+                            const SizedBox(height: 16),
+                            _buildTextField(
+                              controller: _villageStreetController,
+                              label: 'Village/Street',
+                              validator: (v) => v?.isEmpty ?? true ? 'Village/Street is required' : null,
+                            ),
+
+                            const SizedBox(height: 8),
+                            TextButton.icon(
+                              onPressed: _surveyController.refreshLocation,
+                              icon: const Icon(Icons.refresh_rounded),
+                              label: const Text('Refresh Location'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.accent,
+                              ),
+                            ),
                           ],
                         );
                       }),
-                      const SizedBox(height: 8),
-                      TextButton.icon(
-                        onPressed: _surveyController.refreshLocation,
-                        icon: const Icon(Icons.refresh_rounded),
-                        label: const Text('Refresh Location'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppColors.accent,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -267,10 +300,10 @@ class _AddSurveyPageState extends State<AddSurveyPage> {
                                       : _attachmentController.uploadToCloudinary,
                                   icon: _attachmentController.isUploading.value
                                       ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(strokeWidth: 2),
-                                        )
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
                                       : const Icon(Icons.upload),
                                   label: Text(
                                     _attachmentController.isUploading.value
@@ -305,28 +338,32 @@ class _AddSurveyPageState extends State<AddSurveyPage> {
                     onPressed: _surveyController.isLoading.value
                         ? null
                         : () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              if (_attachmentController.uploadedFileUrls.isEmpty) {
-                                Get.snackbar(
-                                  'Error',
-                                  'Please add at least one photo',
-                                  backgroundColor: Colors.red,
-                                  colorText: Colors.white,
-                                );
-                                return;
-                              }
+                      if (_formKey.currentState?.validate() ?? false) {
+                        if (_attachmentController.uploadedFileUrls.isEmpty) {
+                          Get.snackbar(
+                            'Error',
+                            'Please add at least one photo',
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
+                          return;
+                        }
 
-                              _surveyController.addSurvey(
-                                citizenName: _nameController.text,
-                                phoneNumber: _phoneController.text,
-                                aadharNumber: _aadharController.text,
-                                landmark: _landmarkController.text,
-                                notes: _notesController.text,
-                                surveyorId: _authController.firebaseUser.value?.id ?? '',
-                                category: _selectedCategory,
-                              );
-                            }
-                          },
+                        _surveyController.addSurvey(
+                          citizenName: _nameController.text,
+                          phoneNumber: _phoneController.text,
+                          landmark: _landmarkController.text,
+                          notes: _notesController.text,
+                          surveyorId: _authController.firebaseUser.value?.id ?? '',
+                          category: _selectedCategory,
+                          district: _districtController.text,
+                          block: _blockController.text,
+                          gpWard: _gpWardController.text,
+                          villageStreet: _villageStreetController.text,
+                          state: _surveyController.currentLocation.value?.state ?? '',
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.accent,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -336,21 +373,21 @@ class _AddSurveyPageState extends State<AddSurveyPage> {
                     ),
                     child: _surveyController.isLoading.value
                         ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
                         : const Text(
-                            'Submit Survey',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
+                      'Submit Survey',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
                   )),
                 ),
                 const SizedBox(height: 32),
