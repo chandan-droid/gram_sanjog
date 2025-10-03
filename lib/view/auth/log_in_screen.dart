@@ -16,7 +16,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthController authController = Get.put(AuthController());
-    TextEditingController emailController = TextEditingController();
+    TextEditingController mobileController = TextEditingController();
     TextEditingController pwController = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
@@ -44,10 +44,10 @@ class LoginPage extends StatelessWidget {
 
                   // Email
                   TextFormField(
-                    controller: emailController,
+                    controller: mobileController,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      hintText: 'Email',
+                      hintText: 'Mobile Number',
                       hintStyle: const TextStyle(color: Colors.grey),
                       filled: true,
                       fillColor: Colors.grey.shade900,
@@ -55,17 +55,16 @@ class LoginPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
-                      prefixIcon: const Icon(Icons.email, color: Colors.grey),
+                      prefixIcon: const Icon(Icons.phone, color: Colors.grey),
                     ),
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.phone,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Email is required';
+                        return 'Mobile number is required';
                       }
-                      final emailRegex = RegExp(
-                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (!emailRegex.hasMatch(value.trim())) {
-                        return 'Enter a valid email';
+                      final mobileRegex = RegExp(r'^\d{10}$');
+                      if (!mobileRegex.hasMatch(value.trim())) {
+                        return 'Enter a valid 10-digit mobile number';
                       }
                       return null;
                     },
@@ -106,8 +105,8 @@ class LoginPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          authController.login(emailController.text, pwController.
-                          text);
+                          final email = '${mobileController.text}@gramsanjog.in';
+                          authController.login(email, pwController.text);
                         }
                       },
                       style: ElevatedButton.styleFrom(

@@ -61,9 +61,10 @@ class AuthController extends GetxController {
   Future<void> signup(SignupData signupData) async {
     try {
       isLoading.value = true;
+      final email = '${signupData.phoneNumber}@gramsanjog.in';
 
       // 1. Create user in Firebase Auth
-      final userCredential = await authService.signUp(signupData.email, signupData.password);
+      final userCredential = await authService.signUp(email, signupData.password);
       final firebaseUser = userCredential.user;
 
       if (firebaseUser != null) {
